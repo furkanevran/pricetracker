@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pricetracker.extractor", "pricetracker.extractor\pricetracker.extractor.csproj", "{D05AAA6A-9055-45FE-AD2E-09780CEAAE89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pricetracker.api", "pricetracker.api\pricetracker.api.csproj", "{D3FF8107-B055-4230-A206-B2E0695B1D10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pricetracker.infra", "pricetracker.infra\pricetracker.infra.csproj", "{AF3DA13B-C2F4-4AAA-8990-538933A6925D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D05AAA6A-9055-45FE-AD2E-09780CEAAE89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D05AAA6A-9055-45FE-AD2E-09780CEAAE89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D05AAA6A-9055-45FE-AD2E-09780CEAAE89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D05AAA6A-9055-45FE-AD2E-09780CEAAE89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3FF8107-B055-4230-A206-B2E0695B1D10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3FF8107-B055-4230-A206-B2E0695B1D10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3FF8107-B055-4230-A206-B2E0695B1D10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3FF8107-B055-4230-A206-B2E0695B1D10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF3DA13B-C2F4-4AAA-8990-538933A6925D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF3DA13B-C2F4-4AAA-8990-538933A6925D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF3DA13B-C2F4-4AAA-8990-538933A6925D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF3DA13B-C2F4-4AAA-8990-538933A6925D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
