@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Mvc;
+using pricetracker.extractor;
+using pricetracker.infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,7 +10,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddExtractors();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,5 +25,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapPost("/amazon/price", async (string amazonUrl, IExtractor extractor) =>
+{
+    return await extractor.ExtractPrice(amazonUrl);
+});
 
 app.Run();
