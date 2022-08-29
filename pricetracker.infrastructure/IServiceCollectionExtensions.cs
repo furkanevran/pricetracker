@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using pricetracker.extractor;
+using pricetracker.extractor.Extractors.Amazon;
 
 namespace pricetracker.infrastructure;
 

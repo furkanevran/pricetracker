@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using HtmlAgilityPack;
 
-namespace pricetracker.extractor;
+namespace pricetracker.extractor.Extractors.Amazon;
 
 public class AmazonExtractor : IExtractor
 {
