@@ -8,28 +8,24 @@
     <projectFile>pricetracker.infrastructure/pricetracker.infrastructure.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1653c36-918a-476f-bdda-45d9f5d868d1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pricetracker.extractor/AmazonExtractor.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pricetracker.infrastructure/.dockerignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pricetracker.infrastructure/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pricetracker.infrastructure/IServiceCollectionExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pricetracker.infrastructure/pricetracker.infrastructure.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pricetracker.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.pricetracker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.pricetracker/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="e1653c36-918a-476f-bdda-45d9f5d868d1" name="Changes" comment="Initial commit">
       <change beforePath="$PROJECT_DIR$/pricetracker.api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/pricetracker.api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pricetracker.api/pricetracker.api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/pricetracker.api/pricetracker.api.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pricetracker.extractor/Class1.cs" beforeDir="false" afterPath="$PROJECT_DIR$/pricetracker.extractor/IExtractor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pricetracker.extractor/pricetracker.extractor.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/pricetracker.extractor/pricetracker.extractor.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pricetracker.sln" beforeDir="false" afterPath="$PROJECT_DIR$/pricetracker.sln" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Furkan Evran &lt;furkanevrann@outlook.com&gt;" />
+      </list>
+    </option>
+  </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a6135f45297f476da612b0f6ff8e733b28000/47/8445f777/HtmlDocument.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/furka/RiderProjects/pricetracker/pricetracker.api/Program.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/pricetracker.infra/Program.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -142,6 +138,7 @@
       <option name="presentableId" value="Default" />
       <updated>1661683457755</updated>
       <workItem from="1661683460452" duration="1883000" />
+      <workItem from="1661792909871" duration="261000" />
     </task>
     <task id="LOCAL-00001" summary="create new projects">
       <created>1661683539174</created>
@@ -157,7 +154,28 @@
       <option name="project" value="LOCAL" />
       <updated>1661683546391</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="setup references">
+      <created>1661792931007</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1661792931007</updated>
+    </task>
+    <task id="LOCAL-00004" summary="add rider files">
+      <created>1661792965535</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1661792965535</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Initial commit">
+      <created>1661793105761</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1661793105761</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -180,6 +198,9 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="create new projects" />
-    <option name="LAST_COMMIT_MESSAGE" value="create new projects" />
+    <MESSAGE value="setup references" />
+    <MESSAGE value="add rider files" />
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
   </component>
 </project>
