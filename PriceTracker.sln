@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pricetracker.extractor", "pricetracker.extractor\pricetracker.extractor.csproj", "{D05AAA6A-9055-45FE-AD2E-09780CEAAE89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceTracker.Extractor", "PriceTracker.Extractor\PriceTracker.Extractor.csproj", "{D05AAA6A-9055-45FE-AD2E-09780CEAAE89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pricetracker.api", "pricetracker.api\pricetracker.api.csproj", "{D3FF8107-B055-4230-A206-B2E0695B1D10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceTracker.API", "PriceTracker.API\PriceTracker.API.csproj", "{D3FF8107-B055-4230-A206-B2E0695B1D10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pricetracker.infrastructure", "pricetracker.infrastructure\pricetracker.infrastructure.csproj", "{24379F69-6210-4C2C-ABFD-384CA4387993}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceTracker.Infra", "PriceTracker.Infra\PriceTracker.Infra.csproj", "{24379F69-6210-4C2C-ABFD-384CA4387993}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

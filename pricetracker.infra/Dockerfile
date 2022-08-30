@@ -1,20 +1,18 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["pricetracker.infra/pricetracker.infra.csproj", "pricetracker.infra/"]
-RUN dotnet restore "pricetracker.infra/pricetracker.infra.csproj"
+COPY ["pricetracker.infrastructure/pricetracker.infrastructure.csproj", "pricetracker.infrastructure/"]
+RUN dotnet restore "pricetracker.infrastructure/pricetracker.infrastructure.csproj"
 COPY . .
-WORKDIR "/src/pricetracker.infra"
-RUN dotnet build "pricetracker.infra.csproj" -c Release -o /app/build
+WORKDIR "/src/pricetracker.infrastructure"
+RUN dotnet build "pricetracker.infrastructure.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "pricetracker.infra.csproj" -c Release -o /app/publish
+RUN dotnet publish "pricetracker.infrastructure.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "pricetracker.infra.dll"]
+ENTRYPOINT ["dotnet", "pricetracker.infrastructure.dll"]

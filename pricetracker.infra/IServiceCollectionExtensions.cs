@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using pricetracker.extractor;
-using pricetracker.extractor.Extractors.Amazon;
+using PriceTracker.Extractor;
+using PriceTracker.Extractor.Extractors.Amazon;
 
-namespace pricetracker.infrastructure;
+namespace PriceTracker.Infra;
 
 public static class IServiceCollectionExtensions
 {

@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\pricetracker.infrastructure\pricetracker.infrastructure.csproj" />
+      <ProjectReference Include="..\PriceTracker.Infra\PriceTracker.Infra.csproj" />
     </ItemGroup>
 
 </Project>
