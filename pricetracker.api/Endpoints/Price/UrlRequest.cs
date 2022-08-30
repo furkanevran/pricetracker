@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace PriceTracker.API;
+namespace PriceTracker.API.Endpoints.Price;
 
 public class UrlRequest
 {
