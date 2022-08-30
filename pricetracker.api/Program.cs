@@ -1,5 +1,9 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using PriceTracker.API;
+using PriceTracker.API.Attributes;
+using PriceTracker.API.Endpoints;
+using PriceTracker.API.Helpers;
 using PriceTracker.Extractor;
 using PriceTracker.Infra;
 
@@ -23,6 +27,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapPost("/price", async ([FromBody] UrlRequest urlRequest, IExtractor extractor) => await extractor.ExtractPrice(urlRequest.Url));
+app.MapMinimalEndpoints();
+
 
 app.Run();
