@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PriceTracker.API;
 using PriceTracker.Extractor;
 using PriceTracker.Infra;
 
