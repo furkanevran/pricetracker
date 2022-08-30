@@ -1,7 +1,4 @@
-using PriceTracker.Extractor;
-using PriceTracker.Extractor.Extractors.Amazon;
-using PriceTracker.Extractor.Extractors.Hepsiburada;
-using PriceTracker.Extractor.Extractors.Trendyol;
+using PriceTracker.Extractor.Extractors;
 using PriceTracker.Infra;
 
 var builder = WebApplication.CreateBuilder(args);

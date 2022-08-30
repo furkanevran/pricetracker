@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PriceTracker.Extractor;
-using PriceTracker.Extractor.Extractors.Amazon;
-using PriceTracker.Extractor.Extractors.Hepsiburada;
-using PriceTracker.Extractor.Extractors.Trendyol;
+using PriceTracker.Extractor.Extractors;
 
 namespace PriceTracker.Infra;
 

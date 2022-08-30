@@ -1,6 +1,6 @@
 using HtmlAgilityPack;
 
-namespace PriceTracker.Extractor.Extractors.Hepsiburada;
+namespace PriceTracker.Extractor.Extractors;
 
 public class HepsiburadaExtractor : IExtractor
 {

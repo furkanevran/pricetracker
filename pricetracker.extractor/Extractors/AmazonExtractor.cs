@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-namespace PriceTracker.Extractor.Extractors.Amazon;
+namespace PriceTracker.Extractor.Extractors;
 
 public class AmazonExtractor : IExtractor
 {
