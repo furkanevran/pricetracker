@@ -1,5 +1,5 @@
-using pricetracker.extractor;
-using pricetracker.infrastructure;
+using PriceTracker.Extractor;
+using PriceTracker.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 

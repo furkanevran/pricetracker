@@ -1,4 +1,4 @@
-﻿namespace pricetracker.extractor;
+﻿namespace PriceTracker.Extractor;
 
 public interface IExtractor
 {

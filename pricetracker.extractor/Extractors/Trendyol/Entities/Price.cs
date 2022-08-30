@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace pricetracker.extractor.Extractors.Trendyol.Entities;
+namespace PriceTracker.Extractor.Extractors.Trendyol.Entities;
 
 public class Price
 {

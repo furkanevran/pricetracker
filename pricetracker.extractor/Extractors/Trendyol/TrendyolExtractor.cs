@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-namespace pricetracker.extractor.Extractors.Trendyol;
+namespace PriceTracker.Extractor.Extractors.Trendyol;
 
 public class TrendyolExtractor : IExtractor
 {
