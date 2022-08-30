@@ -4,7 +4,6 @@ namespace PriceTracker.Extractor.Extractors.Trendyol;
 
 public class TrendyolExtractor : IExtractor
 {
-    
     public async Task<double> ExtractPrice(string url)
     {
         var web = new HtmlWeb();
