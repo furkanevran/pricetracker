@@ -2,9 +2,16 @@ namespace PriceTracker.Extractor;
 
 public class WebClient : IWebClient
 {
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public WebClient(IHttpClientFactory httpClientFactory)
+    {
+        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+    }
+    
     public async Task<string> GetString(string url)
     {
-        using var client = new HttpClient();
+        using var client = _httpClientFactory.CreateClient();
         client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", "");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");

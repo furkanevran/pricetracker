@@ -20,6 +20,8 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddSingleton<TrendyolPriceExtractor, TrendyolPriceExtractor>();
         serviceCollection.AddSingleton<HepsiburadaPriceExtractor, HepsiburadaPriceExtractor>();
         serviceCollection.AddSingleton<WatsonsPriceExtractor, WatsonsPriceExtractor>();
+
+        serviceCollection.AddHttpClient();
         
         return serviceCollection;
     }

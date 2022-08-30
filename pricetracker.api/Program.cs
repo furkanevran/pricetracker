@@ -1,5 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
 using PriceTracker.Extractor;
-using PriceTracker.Extractor.Extractors;
 using PriceTracker.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,11 +22,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapPost("/amazon/price", async (string amazonUrl, AmazonPriceExtractor extractor) => await extractor.ExtractPrice(amazonUrl));
-app.MapPost("/trendyol/price", async (string trendyolUrl, TrendyolPriceExtractor extractor) => await extractor.ExtractPrice(trendyolUrl));
-app.MapPost("/hepsiburada/price", async (string hepsiburadaUrl, HepsiburadaPriceExtractor extractor) => await extractor.ExtractPrice(hepsiburadaUrl));
-app.MapPost("/watsons/price", async (string watsonsUrl, WatsonsPriceExtractor extractor) => await extractor.ExtractPrice(watsonsUrl));
-
-app.MapPost("/price", async (string url, IExtractor extractor) => await extractor.ExtractPrice(url));
+app.MapPost("/price", async ([FromBody] UrlRequest urlRequest, IExtractor extractor) => await extractor.ExtractPrice(urlRequest.Url));
 
 app.Run();
