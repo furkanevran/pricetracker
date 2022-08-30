@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddSingleton<IExtractor, AmazonExtractor>();
         serviceCollection.AddSingleton<IExtractor, TrendyolExtractor>();
         serviceCollection.AddSingleton<IExtractor, HepsiburadaExtractor>();
+        serviceCollection.AddSingleton<IExtractor, WatsonsExtractor>();
         return serviceCollection;
     }
 }

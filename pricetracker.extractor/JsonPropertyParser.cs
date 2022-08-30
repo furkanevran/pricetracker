@@ -41,8 +41,10 @@ public static class JsonPropertyParser
                      lastPropertyName == lastPathPart &&
                      json.TokenType is JsonTokenType.String or JsonTokenType.Number)
             {
+                var convertType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+                
                 var value = Encoding.UTF8.GetString(json.ValueSpan);
-                return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
+                return (T)Convert.ChangeType(value, convertType, CultureInfo.InvariantCulture);
             }
         }
         

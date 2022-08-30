@@ -24,5 +24,6 @@ app.MapControllers();
 app.MapPost("/amazon/price", async (string amazonUrl, AmazonExtractor extractor) => await extractor.ExtractPrice(amazonUrl));
 app.MapPost("/trendyol/price", async (string trendyolUrl, TrendyolExtractor extractor) => await extractor.ExtractPrice(trendyolUrl));
 app.MapPost("/hepsiburada/price", async (string hepsiburadaUrl, HepsiburadaExtractor extractor) => await extractor.ExtractPrice(hepsiburadaUrl));
+app.MapPost("/watsons/price", async (string watsonsUrl, WatsonsExtractor extractor) => await extractor.ExtractPrice(watsonsUrl));
 
 app.Run();
