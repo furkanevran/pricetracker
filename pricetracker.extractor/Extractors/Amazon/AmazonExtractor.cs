@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using HtmlAgilityPack;
+using PriceTracker.Extractor.Extractors.Amazon.Entities;
 
 namespace PriceTracker.Extractor.Extractors.Amazon;
 
@@ -16,19 +17,6 @@ public class AmazonExtractor : IExtractor
             .InnerText;
         
         var metadata = JsonSerializer.Deserialize<AmazonMetadata[]>(jsonMetadata);
-        return metadata![0].priceAmount;
+        return metadata![0].PriceAmount;
     }
-    
-    private record AmazonMetadata(string displayPrice,
-        double priceAmount,
-        string currencySymbol,
-        string integerValue,
-        string decimalSeparator,
-        string fractionalValue,
-        string symbolPosition,
-        bool hasSpace,
-        bool showFractionalPartIfEmpty,
-        string offerListingId,
-        string locale,
-        string buyingOptionType);
 }
