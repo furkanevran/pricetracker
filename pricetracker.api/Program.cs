@@ -1,5 +1,6 @@
 using PriceTracker.Extractor;
 using PriceTracker.Extractor.Extractors.Amazon;
+using PriceTracker.Extractor.Extractors.Hepsiburada;
 using PriceTracker.Extractor.Extractors.Trendyol;
 using PriceTracker.Infra;
 
@@ -25,5 +26,6 @@ app.MapControllers();
 
 app.MapPost("/amazon/price", async (string amazonUrl, AmazonExtractor extractor) => await extractor.ExtractPrice(amazonUrl));
 app.MapPost("/trendyol/price", async (string trendyolUrl, TrendyolExtractor extractor) => await extractor.ExtractPrice(trendyolUrl));
+app.MapPost("/hepsiburada/price", async (string hepsiburadaUrl, HepsiburadaExtractor extractor) => await extractor.ExtractPrice(hepsiburadaUrl));
 
 app.Run();

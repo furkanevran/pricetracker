@@ -1,12 +1,9 @@
-﻿using System.Text.Json;
-using HtmlAgilityPack;
-using PriceTracker.Extractor.Extractors.Trendyol.Entities;
+﻿using HtmlAgilityPack;
 
 namespace PriceTracker.Extractor.Extractors.Trendyol;
 
 public class TrendyolExtractor : IExtractor
 {
-    private static readonly JsonSerializerOptions MetadataSerializerOptions = new(JsonSerializerDefaults.Web);
     
     public async Task<double> ExtractPrice(string url)
     {
@@ -19,8 +16,7 @@ public class TrendyolExtractor : IExtractor
             .InnerText["window.__PRODUCT_DETAIL_APP_INITIAL_STATE__=".Length..]
             .Split(";window.")[0];
 
-        
-        var metadata = JsonSerializer.Deserialize<Root>(jsonMetadata, MetadataSerializerOptions)!;
-        return metadata.Product.Price.DiscountedPrice.Value;
+
+        return JsonPropertyParser.TryParse<double>(jsonMetadata, "product", "price", "discountedPrice", "value");
     }
 }
