@@ -4,6 +4,13 @@ namespace PriceTracker.Extractor.Extractors;
 
 public class HepsiburadaPriceExtractor : IPriceExtractor
 {
+    private readonly IWebClient _webClient;
+
+    public HepsiburadaPriceExtractor(IWebClient webClient)
+    {
+        _webClient = webClient ?? throw new ArgumentNullException(nameof(webClient));
+    }
+
     public bool CanExtract(string url)
     {
         return url.StartsWith("https://www.hepsiburada.com/");
@@ -11,7 +18,7 @@ public class HepsiburadaPriceExtractor : IPriceExtractor
 
     public async Task<double?> ExtractPrice(string url)
     {
-        var html = await WebHelper.GetString(url);
+        var html = await _webClient.GetString(url);
 
         var doc = new HtmlDocument();
         doc.LoadHtml(html);

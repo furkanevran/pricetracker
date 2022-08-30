@@ -1,15 +1,16 @@
 namespace PriceTracker.Extractor;
 
-public class WebHelper
+public class WebClient : IWebClient
 {
-    public static async Task<string> GetString(string url)
+    public async Task<string> GetString(string url)
     {
         using var client = new HttpClient();
         client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", "");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
+        client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "br");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Language", "en,en-US;q=0.5");
-        client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.hepsiburada.com/");
+        client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", url);
         client.DefaultRequestHeaders.TryAddWithoutValidation("Connection", "keep-alive");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Sec-Fetch-Dest", "document");

@@ -4,6 +4,13 @@ namespace PriceTracker.Extractor.Extractors;
 
 public class AmazonPriceExtractor : IPriceExtractor
 {
+    private readonly IWebClient _webClient;
+
+    public AmazonPriceExtractor(IWebClient webClient)
+    {
+        _webClient = webClient ?? throw new ArgumentNullException(nameof(webClient));
+    }
+    
     public bool CanExtract(string url)
     {
         return url.StartsWith("https://www.amazon.com");
@@ -11,8 +18,10 @@ public class AmazonPriceExtractor : IPriceExtractor
 
     public async Task<double?> ExtractPrice(string url)
     {
-        var web = new HtmlWeb();
-        var doc = await web.LoadFromWebAsync(url);
+        var html = await _webClient.GetString(url);
+
+        var doc = new HtmlDocument();
+        doc.LoadHtml(html);
         
         var jsonMetadata =  doc.DocumentNode
             .Descendants("div")
