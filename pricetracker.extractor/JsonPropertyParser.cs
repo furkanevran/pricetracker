@@ -18,19 +18,18 @@ public static class JsonPropertyParser
         var currentDepth = 0;
         var targetDepth = -1;
         string lastPropertyName = null!;
+        var lastPathPart = path[^1];
 
         while (json.Read())
         {
+            currentDepth = GetCurrentDepth(json, currentDepth);
+            
             if (json.TokenType == JsonTokenType.PropertyName)
                 lastPropertyName = json.GetString()!;
-            else if (json.TokenType == JsonTokenType.EndObject)
-                currentDepth--;
-            else if (json.TokenType == JsonTokenType.StartObject)
-                currentDepth++;
-
+            
             if (targetDepth > 0 && targetDepth > currentDepth)
                 continue;
-
+            
             if (json.TokenType == JsonTokenType.StartObject)
             {
                 if (lastPropertyName != path[pathDepth])
@@ -38,61 +37,25 @@ public static class JsonPropertyParser
                 else
                     pathDepth++;
             }
-            else if (pathDepth == path.Length - 1 && lastPropertyName == path[^1] && json.TokenType is JsonTokenType.String or JsonTokenType.Number)
+            else if (pathDepth == path.Length - 1 &&
+                     lastPropertyName == lastPathPart &&
+                     json.TokenType is JsonTokenType.String or JsonTokenType.Number)
             {
                 var value = Encoding.UTF8.GetString(json.ValueSpan);
                 return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
             }
         }
         
-        // var currentPath = new string[path.Length];
-        // string previousTokenName = null!;
-        // var pathDepth = 0;
-        // var currentDepth = 0;
-        // var targetDepth = -1;
-        //
-        // var sequenceEqual = true;
-        //
-        // while (json.Read())
-        // {
-        //     if (json.TokenType == JsonTokenType.EndObject)
-        //     {
-        //         currentDepth--;
-        //         if (currentDepth == targetDepth)
-        //         {
-        //             pathDepth--;
-        //             targetDepth = -1;
-        //         }
-        //         sequenceEqual = currentPath[pathDepth] == path[pathDepth];
-        //     }
-        //     else if (json.TokenType == JsonTokenType.StartObject)
-        //     {
-        //         currentDepth++;
-        //     }
-        //
-        //     if (!sequenceEqual && targetDepth > currentDepth)
-        //         continue;
-        //     
-        //     if (json.TokenType == JsonTokenType.PropertyName)
-        //         previousTokenName = json.GetString()!;
-        //     else if (json.TokenType == JsonTokenType.StartObject)
-        //     {
-        //         currentPath[pathDepth] = previousTokenName;
-        //         sequenceEqual = currentPath[pathDepth] == path[pathDepth];
-        //         if (!sequenceEqual)
-        //             targetDepth = currentDepth;
-        //         
-        //         pathDepth++;
-        //         currentDepth++;
-        //     }
-        //     else if (json.TokenType is JsonTokenType.String or JsonTokenType.Number)
-        //     {
-        //         if (pathDepth != path.Length - 1) continue;
-        //         var value = Encoding.UTF8.GetString(json.ValueSpan);
-        //         return (T)Convert.ChangeType(value, typeof(T));
-        //     }
-        // }
-        
         return default;
+    }
+
+    private static int GetCurrentDepth(Utf8JsonReader json, int currentDepth)
+    {
+        if (json.TokenType == JsonTokenType.EndObject)
+            currentDepth--;
+        else if (json.TokenType == JsonTokenType.StartObject) 
+            currentDepth++;
+
+        return currentDepth;
     }
 }
