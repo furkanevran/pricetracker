@@ -8,10 +8,12 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddExtractors(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IExtractor, AmazonExtractor>();
-        serviceCollection.AddSingleton<IExtractor, TrendyolExtractor>();
-        serviceCollection.AddSingleton<IExtractor, HepsiburadaExtractor>();
-        serviceCollection.AddSingleton<IExtractor, WatsonsExtractor>();
+        serviceCollection.AddSingleton<IPriceExtractor, AmazonPriceExtractor>();
+        serviceCollection.AddSingleton<IPriceExtractor, TrendyolPriceExtractor>();
+        serviceCollection.AddSingleton<IPriceExtractor, HepsiburadaPriceExtractor>();
+        serviceCollection.AddSingleton<IPriceExtractor, WatsonsPriceExtractor>();
+        serviceCollection.AddSingleton<IExtractor, Extractor.Extractor>();
+        
         return serviceCollection;
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace PriceTracker.Extractor;
+namespace PriceTracker.Extractor;
 
-public interface IExtractor
+public  interface IExtractor
 {
-    Task<double> ExtractPrice(string url);
+    Task<double?> ExtractPrice(string url);
 }

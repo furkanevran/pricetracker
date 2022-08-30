@@ -2,9 +2,14 @@
 
 namespace PriceTracker.Extractor.Extractors;
 
-public class TrendyolExtractor : IExtractor
+public class TrendyolPriceExtractor : IPriceExtractor
 {
-    public async Task<double> ExtractPrice(string url)
+    public bool CanExtract(string url)
+    {
+        return url.StartsWith("https://www.trendyol.com/");
+    }
+
+    public async Task<double?> ExtractPrice(string url)
     {
         var web = new HtmlWeb();
         var doc = await web.LoadFromWebAsync(url);
@@ -16,6 +21,6 @@ public class TrendyolExtractor : IExtractor
             .Split(";window.")[0];
 
 
-        return JsonPropertyParser.TryParse<double>(jsonMetadata, "product", "price", "discountedPrice", "value");
+        return JsonPropertyParser.TryParse<double?>(jsonMetadata, "product", "price", "discountedPrice", "value");
     }
 }

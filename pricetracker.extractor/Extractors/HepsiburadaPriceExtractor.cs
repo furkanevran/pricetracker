@@ -2,9 +2,14 @@ using HtmlAgilityPack;
 
 namespace PriceTracker.Extractor.Extractors;
 
-public class HepsiburadaExtractor : IExtractor
+public class HepsiburadaPriceExtractor : IPriceExtractor
 {
-    public async Task<double> ExtractPrice(string url)
+    public bool CanExtract(string url)
+    {
+        return url.StartsWith("https://www.hepsiburada.com/");
+    }
+
+    public async Task<double?> ExtractPrice(string url)
     {
         var html = await WebHelper.GetString(url);
 
@@ -20,6 +25,6 @@ public class HepsiburadaExtractor : IExtractor
         if (jsonMetadata.EndsWith(";"))
             jsonMetadata = jsonMetadata[..^1];
 
-        return JsonPropertyParser.TryParse<double>(jsonMetadata, "product", "listings", "price", "amount");
+        return JsonPropertyParser.TryParse<double?>(jsonMetadata, "product", "listings", "price", "amount");
     }
 }

@@ -2,9 +2,14 @@
 
 namespace PriceTracker.Extractor.Extractors;
 
-public class AmazonExtractor : IExtractor
+public class AmazonPriceExtractor : IPriceExtractor
 {
-    public async Task<double> ExtractPrice(string url)
+    public bool CanExtract(string url)
+    {
+        return url.StartsWith("https://www.amazon.com");
+    }
+
+    public async Task<double?> ExtractPrice(string url)
     {
         var web = new HtmlWeb();
         var doc = await web.LoadFromWebAsync(url);
@@ -14,6 +19,6 @@ public class AmazonExtractor : IExtractor
             .First(div => div.HasClass("twister-plus-buying-options-price-data"))
             .InnerText;
         
-        return JsonPropertyParser.TryParse<double>(jsonMetadata, "priceAmount");
+        return JsonPropertyParser.TryParse<double?>(jsonMetadata, "priceAmount");
     }
 }
