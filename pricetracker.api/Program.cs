@@ -1,10 +1,4 @@
-using System.Reflection;
-using Microsoft.AspNetCore.Mvc;
-using PriceTracker.API;
-using PriceTracker.API.Attributes;
-using PriceTracker.API.Endpoints;
 using PriceTracker.API.Helpers;
-using PriceTracker.Extractor;
 using PriceTracker.Infra;
 
 var builder = WebApplication.CreateBuilder(args);

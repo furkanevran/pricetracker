@@ -16,18 +16,16 @@ public static class WebApplicationHelpers
         foreach (var endpointType in endpointTypes)
         {
             var pattern = endpointType.GetCustomAttribute<PatternAttribute>()?.Pattern ?? endpointType.Name;
-            IEndpoint CreateEndpoint() => (IEndpoint)ActivatorUtilities.CreateInstance(app.Services, endpointType)!;
-    
-            var endpoint = CreateEndpoint();
+            var endpoint = (IEndpoint)ActivatorUtilities.CreateInstance(app.Services, endpointType)!;
 
             if (endpoint.Delete != null)
-                app.MapDelete(pattern, CreateEndpoint().Delete!);
+                app.MapDelete(pattern, endpoint.Delete);
             if (endpoint.Get != null)
-                app.MapGet(pattern, CreateEndpoint().Get!);
+                app.MapGet(pattern, endpoint.Get);
             if (endpoint.Post != null)
-                app.MapPost(pattern, CreateEndpoint().Post!);
+                app.MapPost(pattern, endpoint.Post);
             if (endpoint.Put != null)
-                app.MapPut(pattern, CreateEndpoint().Put!);
+                app.MapPut(pattern, endpoint.Put);
         }
     }
 }
