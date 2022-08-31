@@ -6,8 +6,4 @@ namespace PriceTracker.API.Endpoints;
 /// </summary>
 public interface IEndpoint
 {
-    Delegate? Post => null;
-    Delegate? Get => null;
-    Delegate? Put => null;
-    Delegate? Delete => null;
 }
