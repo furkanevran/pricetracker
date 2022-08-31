@@ -17,7 +17,7 @@ public static class WebApplicationHelpers
             return Delegate.CreateDelegate(funcType, method);
         }
         
-        IEnumerable<Delegate> GetActions<T>(IReflect endpointType) where T : Attribute
+        static IEnumerable<Delegate> GetActions<T>(IReflect endpointType) where T : Attribute
         {
             var foundMethods = endpointType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Where(m => m.GetCustomAttribute<T>() != null);
@@ -54,15 +54,6 @@ public static class WebApplicationHelpers
             
             foreach (var options in GetActions<HttpOptionsAttribute>(endpointType))
                 app.MapMethods(pattern, new[] {HttpMethod.Options.Method}, options).AddEndpointFilter<ValidateEntityFilter>();
-            
-            // if (endpoint.Delete != null)
-            //     app.MapDelete(pattern, endpoint.Delete).AddEndpointFilter<ValidateEntityFilter>();
-            // if (endpoint.Get != null)
-            //     app.MapGet(pattern, endpoint.Get).AddEndpointFilter<ValidateEntityFilter>();
-            // if (endpoint.Post != null)
-            //     app.MapPost(pattern, endpoint.Post).AddEndpointFilter<ValidateEntityFilter>();
-            // if (endpoint.Put != null)
-            //     app.MapPut(pattern, endpoint.Put).AddEndpointFilter<ValidateEntityFilter>();
         }
     }
 }
