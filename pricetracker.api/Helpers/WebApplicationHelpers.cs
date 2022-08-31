@@ -1,6 +1,7 @@
 using System.Reflection;
 using PriceTracker.API.Attributes;
 using PriceTracker.API.Endpoints;
+using PriceTracker.API.Filters;
 
 namespace PriceTracker.API.Helpers;
 
@@ -19,13 +20,13 @@ public static class WebApplicationHelpers
             var endpoint = (IEndpoint)ActivatorUtilities.CreateInstance(app.Services, endpointType)!;
 
             if (endpoint.Delete != null)
-                app.MapDelete(pattern, endpoint.Delete);
+                app.MapDelete(pattern, endpoint.Delete).AddEndpointFilter<ValidateEntityFilter>();
             if (endpoint.Get != null)
-                app.MapGet(pattern, endpoint.Get);
+                app.MapGet(pattern, endpoint.Get).AddEndpointFilter<ValidateEntityFilter>();
             if (endpoint.Post != null)
-                app.MapPost(pattern, endpoint.Post);
+                app.MapPost(pattern, endpoint.Post).AddEndpointFilter<ValidateEntityFilter>();
             if (endpoint.Put != null)
-                app.MapPut(pattern, endpoint.Put);
+                app.MapPut(pattern, endpoint.Put).AddEndpointFilter<ValidateEntityFilter>();
         }
     }
 }

@@ -1,3 +1,4 @@
+using FluentValidation;
 using PriceTracker.API.Helpers;
 using PriceTracker.Infra;
 
@@ -7,6 +8,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddExtractors();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -22,6 +25,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapMinimalEndpoints();
-
 
 app.Run();
