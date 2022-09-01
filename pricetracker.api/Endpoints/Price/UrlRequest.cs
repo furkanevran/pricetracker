@@ -13,7 +13,10 @@ public class UrlRequestValidator : AbstractValidator<UrlRequest>
 {
     public UrlRequestValidator()
     {
-        RuleFor(x => x.Url).NotEmpty();
+        RuleFor(x => x.Url)
+            .Must(url => url.StartsWith("https://")).WithMessage("URL must be HTTPS")
+            .Must(url => Uri.TryCreate(url, UriKind.Absolute, out _)).WithMessage("Invalid URL")
+            .NotEmpty();
     }
 }
 
