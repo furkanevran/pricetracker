@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using PriceTracker.API.Attributes;
 using PriceTracker.API.Endpoints;
 using PriceTracker.API.Filters;
@@ -17,12 +18,19 @@ public static class WebApplicationHelpers
             return Delegate.CreateDelegate(funcType, method);
         }
         
-        static IEnumerable<Delegate> GetActions<T>(IReflect endpointType) where T : Attribute
+        static (string Template, Delegate Handler)[] GetActions<T>(string baseTemplate, IReflect endpointType) where T : HttpMethodAttribute
         {
             var foundMethods = endpointType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Where(m => m.GetCustomAttribute<T>() != null);
             
-            return foundMethods.Select(CreateDelegate).ToArray();
+            return foundMethods.Select(method =>
+            {
+                var template = baseTemplate;
+                if (method.GetCustomAttribute<T>()!.Template is { } templateSuffix)
+                    template += "/" + templateSuffix;
+                
+                return (template, CreateDelegate(method));
+            }).ToArray();
         }
         
         var endpointTypes = typeof(IEndpoint).Assembly.GetTypes().Where(t => typeof(IEndpoint).IsAssignableFrom(t) &&
@@ -34,26 +42,26 @@ public static class WebApplicationHelpers
         {
             var pattern = endpointType.GetCustomAttribute<PatternAttribute>()?.Pattern ?? endpointType.Name;
 
-            foreach (var post in GetActions<HttpPostAttribute>(endpointType))
-                app.MapMethods(pattern, new[] {HttpMethod.Post.Method}, post).AddEndpointFilter<ValidateEntityFilter>();
+            foreach (var post in GetActions<HttpPostAttribute>(pattern, endpointType))
+                app.MapMethods(post.Template, new[] {HttpMethod.Post.Method}, post.Handler).AddEndpointFilter<ValidateEntityFilter>();
             
-            foreach (var get in GetActions<HttpGetAttribute>(endpointType))
-                app.MapMethods(pattern, new[] {HttpMethod.Get.Method}, get).AddEndpointFilter<ValidateEntityFilter>();
+            foreach (var get in GetActions<HttpGetAttribute>(pattern, endpointType))
+                app.MapMethods(get.Template, new[] {HttpMethod.Get.Method}, get.Handler).AddEndpointFilter<ValidateEntityFilter>();
             
-            foreach (var put in GetActions<HttpPutAttribute>(endpointType))
-                app.MapMethods(pattern, new[] {HttpMethod.Put.Method}, put).AddEndpointFilter<ValidateEntityFilter>();
+            foreach (var put in GetActions<HttpPutAttribute>(pattern, endpointType))
+                app.MapMethods(put.Template, new[] {HttpMethod.Put.Method}, put.Handler).AddEndpointFilter<ValidateEntityFilter>();
             
-            foreach (var delete in GetActions<HttpDeleteAttribute>(endpointType))
-                app.MapMethods(pattern, new[] {HttpMethod.Delete.Method}, delete).AddEndpointFilter<ValidateEntityFilter>();
+            foreach (var delete in GetActions<HttpDeleteAttribute>(pattern, endpointType))
+                app.MapMethods(delete.Template, new[] {HttpMethod.Delete.Method}, delete.Handler).AddEndpointFilter<ValidateEntityFilter>();
             
-            foreach (var patch in GetActions<HttpPatchAttribute>(endpointType))
-                app.MapMethods(pattern, new[] {HttpMethod.Patch.Method}, patch).AddEndpointFilter<ValidateEntityFilter>();
+            foreach (var patch in GetActions<HttpPatchAttribute>(pattern, endpointType))
+                app.MapMethods(patch.Template, new[] {HttpMethod.Patch.Method}, patch.Handler).AddEndpointFilter<ValidateEntityFilter>();
             
-            foreach (var head in GetActions<HttpHeadAttribute>(endpointType))
-                app.MapMethods(pattern, new[] {HttpMethod.Head.Method}, head).AddEndpointFilter<ValidateEntityFilter>();
+            foreach (var head in GetActions<HttpHeadAttribute>(pattern, endpointType))
+                app.MapMethods(head.Template, new[] {HttpMethod.Head.Method}, head.Handler).AddEndpointFilter<ValidateEntityFilter>();
             
-            foreach (var options in GetActions<HttpOptionsAttribute>(endpointType))
-                app.MapMethods(pattern, new[] {HttpMethod.Options.Method}, options).AddEndpointFilter<ValidateEntityFilter>();
+            foreach (var options in GetActions<HttpOptionsAttribute>(pattern, endpointType))
+                app.MapMethods(options.Template, new[] {HttpMethod.Options.Method}, options.Handler).AddEndpointFilter<ValidateEntityFilter>();
         }
     }
 }

@@ -19,8 +19,8 @@ public class PriceEndpoint : IEndpoint
     [HttpPatch]
     public static string Patch (HttpContext ctx) => "Patch" + ctx.Request.Path;
     
-    [HttpGet]
-    public static string Get (HttpContext ctx) => "Get" + ctx.Request.Path;
+    [HttpGet("{id}")]
+    public static string Get (HttpContext ctx, int id) => "Get " + id + " " + ctx.Request.Path;
     
     [HttpHead]
     public static string Head (HttpContext ctx) => "Head" + ctx.Request.Path;
