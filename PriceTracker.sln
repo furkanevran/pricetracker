@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceTracker.API", "PriceTr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceTracker.Infra", "PriceTracker.Infra\PriceTracker.Infra.csproj", "{24379F69-6210-4C2C-ABFD-384CA4387993}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceTracker.Entities", "PriceTracker.Entities\PriceTracker.Entities.csproj", "{740C3EE8-D7E1-4202-ABF4-BCA1E23B061A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceTracker.Persistence", "PriceTracker.Persistence\PriceTracker.Persistence.csproj", "{330F68F7-1E39-4684-BF3C-E968423F8BDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{24379F69-6210-4C2C-ABFD-384CA4387993}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24379F69-6210-4C2C-ABFD-384CA4387993}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24379F69-6210-4C2C-ABFD-384CA4387993}.Release|Any CPU.Build.0 = Release|Any CPU
+		{740C3EE8-D7E1-4202-ABF4-BCA1E23B061A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{740C3EE8-D7E1-4202-ABF4-BCA1E23B061A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{740C3EE8-D7E1-4202-ABF4-BCA1E23B061A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{740C3EE8-D7E1-4202-ABF4-BCA1E23B061A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{330F68F7-1E39-4684-BF3C-E968423F8BDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{330F68F7-1E39-4684-BF3C-E968423F8BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{330F68F7-1E39-4684-BF3C-E968423F8BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{330F68F7-1E39-4684-BF3C-E968423F8BDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

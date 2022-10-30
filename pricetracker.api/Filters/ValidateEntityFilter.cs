@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using FluentValidation;
 using PriceTracker.API.Entities;
 
@@ -18,7 +19,18 @@ public class ValidateEntityFilter : IEndpointFilter
             if (!result.IsValid)
                 return Results.BadRequest(new ErrorResponse(result.Errors.Select(x => x.ErrorMessage)));
         }
-        
-        return await next(context);
+
+        try
+        {
+            return await next(context);
+        }
+        catch (ValidationException ex)
+        {
+            return Results.BadRequest(new ErrorResponse(ex.Errors.Select(x => x.ErrorMessage)));
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest(new ErrorResponse(new []{ ex.Message }));
+        }
     }
 }

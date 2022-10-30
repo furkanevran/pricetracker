@@ -40,7 +40,7 @@ public static class WebApplicationHelpers
 
         foreach (var endpointType in endpointTypes)
         {
-            var pattern = endpointType.GetCustomAttribute<PatternAttribute>()?.Pattern ?? endpointType.Name;
+            var pattern = endpointType.GetCustomAttribute<TemplateAttribute>()?.Template ?? endpointType.Name;
 
             foreach (var post in GetActions<HttpPostAttribute>(pattern, endpointType))
                 app.MapMethods(post.Template, new[] {HttpMethod.Post.Method}, post.Handler).AddEndpointFilter<ValidateEntityFilter>();

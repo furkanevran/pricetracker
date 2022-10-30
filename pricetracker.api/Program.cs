@@ -1,5 +1,6 @@
 using FluentValidation;
 using PriceTracker.API.Helpers;
+using PriceTracker.Entities;
 using PriceTracker.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddExtractors();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssemblyContaining<User>();
 
 var app = builder.Build();
 
