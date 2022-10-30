@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PriceTracker.API.Attributes;
 using PriceTracker.Extractor;
@@ -8,6 +9,7 @@ namespace PriceTracker.API.Endpoints.Price;
 public class PriceEndpoint : IEndpoint
 {
     [HttpPost]
-    public static async Task<double?> Post([FromBody] UrlRequest urlRequest, IExtractor extractor) =>
+    [Authorize]
+    public static async Task<double?> Post([FromBody] UrlRequest urlRequest, IExtractor extractor, IHttpContextAccessor httpContextAccessor) =>
         await extractor.ExtractPrice(urlRequest.Url);
 }

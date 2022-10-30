@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using PriceTracker.Extractor;
 using PriceTracker.Extractor.Extractors;
+using PriceTracker.Persistence;
 
 namespace PriceTracker.Infra;
 
@@ -13,7 +15,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddSingleton<IPriceExtractor, TrendyolPriceExtractor>();
         serviceCollection.AddSingleton<IPriceExtractor, HepsiburadaPriceExtractor>();
         serviceCollection.AddSingleton<IPriceExtractor, WatsonsPriceExtractor>();
-        
+
         serviceCollection.AddSingleton<IExtractor, Extractor.Extractor>();
 
         serviceCollection.AddSingleton<AmazonPriceExtractor, AmazonPriceExtractor>();
@@ -21,8 +23,21 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddSingleton<HepsiburadaPriceExtractor, HepsiburadaPriceExtractor>();
         serviceCollection.AddSingleton<WatsonsPriceExtractor, WatsonsPriceExtractor>();
 
-        serviceCollection.AddHttpClient();
-        
+        serviceCollection.AddHttpClient("Extractor");
+
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddAppDbContext(this IServiceCollection serviceCollection, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
+    {
+        serviceCollection
+            .AddEntityFrameworkSqlite()
+            .AddDbContext<AppDbContext>((provider, builder) =>
+            {
+                // builder.UseSqlite("Data Source=app.db", options => { options.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName); });
+                optionsAction?.Invoke(provider, builder);
+            });
+
         return serviceCollection;
     }
 }

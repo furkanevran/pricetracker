@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PriceTracker.Extractor\PriceTracker.Extractor.csproj" />
+      <ProjectReference Include="..\PriceTracker.Persistence\PriceTracker.Persistence.csproj" />
     </ItemGroup>
 
 </Project>

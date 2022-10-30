@@ -6,9 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
-        <PackageReference Include="StronglyTypedId" Version="1.0.0-beta06" PrivateAssets="all" ExcludeAssets="runtime"/>
-        <PackageReference Include="FluentValidation" Version="11.2.1"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" />
+        <PackageReference Include="FluentValidation" Version="11.2.1" />
     </ItemGroup>
 
 </Project>
