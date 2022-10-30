@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using System.Text.Json;
+using HtmlAgilityPack;
 
 namespace PriceTracker.Extractor.Extractors;
 
@@ -30,6 +31,8 @@ public class TrendyolPriceExtractor : IPriceExtractor
             .Split(";window.")[0];
 
 
-        return JsonPropertyParser.TryParse<double?>(jsonMetadata, "product", "price", "discountedPrice", "value");
+        var productModel = JsonSerializer.Deserialize<JsonElement>(jsonMetadata);
+
+        return productModel.GetProperty("product").GetProperty("price").GetProperty("discountedPrice").GetProperty("value").GetDouble();
     }
 }
