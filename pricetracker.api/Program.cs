@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PriceTracker.API.Helpers;
+using PriceTracker.API.Services.Auth;
 using PriceTracker.Entities;
 using PriceTracker.Infra;
 
@@ -64,6 +65,8 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionKey));
 
 var app = builder.Build();
 

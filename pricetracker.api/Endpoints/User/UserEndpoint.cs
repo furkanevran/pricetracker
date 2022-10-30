@@ -215,45 +215,45 @@ public class UserEndpoint : IEndpoint
         return null;
     }
     
-    public static ClaimsPrincipal? GetClaimsPrincipal(string token)
-    {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is a very long secret key that should be stored in a secure place"));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var validationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = credentials.Key,
-            ValidateIssuer = true,
-            ValidIssuer = "http://localhost:7286",
-            ValidateAudience = true,
-            ValidAudience = "http://localhost:7286",
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
-
-        try
-        {
-            var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
-            return principal;
-        }
-        catch
-        {
-            return null;
-        }
-    }
+    // public static ClaimsPrincipal? GetClaimsPrincipal(string token)
+    // {
+    //     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is a very long secret key that should be stored in a secure place"));
+    //     var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+    //
+    //     var tokenHandler = new JwtSecurityTokenHandler();
+    //     var validationParameters = new TokenValidationParameters
+    //     {
+    //         ValidateIssuerSigningKey = true,
+    //         IssuerSigningKey = credentials.Key,
+    //         ValidateIssuer = true,
+    //         ValidIssuer = "http://localhost:7286",
+    //         ValidateAudience = true,
+    //         ValidAudience = "http://localhost:7286",
+    //         ValidateLifetime = true,
+    //         ClockSkew = TimeSpan.Zero
+    //     };
+    //
+    //     try
+    //     {
+    //         var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+    //         return principal;
+    //     }
+    //     catch
+    //     {
+    //         return null;
+    //     }
+    // }
     
-    public static bool IsTokenValid(string token)
-    {
-        var claimsPrincipal = GetClaimsPrincipal(token);
-        if (claimsPrincipal == null)
-            return false;
-
-        var expiration = DateTime.Parse(claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.Expiration).Value);
-        var tokenVersion = int.Parse(claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.Version).Value);
-        var userId = Guid.Parse(claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
-        return false;
-    }
+    // public static bool IsTokenValid(string token)
+    // {
+    //     var claimsPrincipal = GetClaimsPrincipal(token);
+    //     if (claimsPrincipal == null)
+    //         return false;
+    //
+    //     var expiration = DateTime.Parse(claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.Expiration).Value);
+    //     var tokenVersion = int.Parse(claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.Version).Value);
+    //     var userId = Guid.Parse(claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+    //
+    //     return false;
+    // }
 }
