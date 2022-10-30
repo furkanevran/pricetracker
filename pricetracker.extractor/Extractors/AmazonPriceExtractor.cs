@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using System.Text.Json;
+using HtmlAgilityPack;
 
 namespace PriceTracker.Extractor.Extractors;
 
@@ -27,7 +28,9 @@ public class AmazonPriceExtractor : IPriceExtractor
             .Descendants("div")
             .First(div => div.HasClass("twister-plus-buying-options-price-data"))
             .InnerText;
-        
-        return JsonPropertyParser.TryParse<double?>(jsonMetadata, "priceAmount");
+
+        var productModel = JsonSerializer.Deserialize<JsonElement>(jsonMetadata);
+
+        return productModel.GetProperty("priceAmount").GetDouble();
     }
 }

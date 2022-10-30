@@ -1,3 +1,4 @@
+using System.Text.Json;
 using HtmlAgilityPack;
 
 namespace PriceTracker.Extractor.Extractors;
@@ -29,9 +30,11 @@ public class HepsiburadaPriceExtractor : IPriceExtractor
             .InnerText.Split('\n').First(line => line.Contains("var productModel = "))
             .Split("var productModel = ")[1];
         
-        if (jsonMetadata.EndsWith(";"))
+        while (!jsonMetadata.EndsWith("}"))
             jsonMetadata = jsonMetadata[..^1];
 
-        return JsonPropertyParser.TryParse<double?>(jsonMetadata, "product", "listings", "price", "amount");
+        var productModel = JsonSerializer.Deserialize<JsonElement>(jsonMetadata);
+
+        return productModel.GetProperty("product").GetProperty("listings").EnumerateArray().Min(x => x.GetProperty("price").GetProperty("amount").GetDouble());
     }
 }

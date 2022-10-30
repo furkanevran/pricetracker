@@ -1,3 +1,4 @@
+using System.Text.Json;
 using HtmlAgilityPack;
 
 namespace PriceTracker.Extractor.Extractors;
@@ -32,8 +33,10 @@ public class WatsonsPriceExtractor : IPriceExtractor
             
         var json = await _webClient.GetString(string.Format(URL, productCode));
 
-        return 
-            JsonPropertyParser.TryParse<double?>(json, "otherPrices", "value") ??
-            JsonPropertyParser.TryParse<double?>(json, "price", "value");
+        var productModel = JsonSerializer.Deserialize<JsonElement>(json);
+
+        var allOptions = productModel.GetProperty("baseOptions").EnumerateArray().SelectMany(x => x.GetProperty("options").EnumerateArray());
+        var optionsInStock = allOptions.Where(x => x.GetProperty("stock").GetProperty("stockLevel").GetInt32() > 0);
+        return optionsInStock.Min(x => x.GetProperty("priceData").GetProperty("value").GetDouble());
     }
 }
