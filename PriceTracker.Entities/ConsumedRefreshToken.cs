@@ -7,4 +7,7 @@ public class ConsumedRefreshToken
 {
     [Required]
     public Guid ConsumedRefreshTokenId { get; set; }
+
+    [Required]
+    public DateTime ExpiresAt { get; set; }
 }
