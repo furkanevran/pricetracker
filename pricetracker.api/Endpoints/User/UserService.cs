@@ -4,24 +4,22 @@ using System.Security.Cryptography;
 using System.Text;
 using FluentValidation;
 using Konscious.Security.Cryptography;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using PriceTracker.API.Endpoints.User;
 using PriceTracker.Entities;
 using PriceTracker.Persistence;
 
-namespace PriceTracker.API.Services.Auth;
+namespace PriceTracker.API.Endpoints.User;
 
 public class UserService : IUserService
 {
     private readonly AppDbContext _dbContext;
-    private readonly IValidator<User> _userValidator;
+    private readonly IValidator<PriceTracker.Entities.User> _userValidator;
     private readonly JwtOptions _jwtOptions;
     private readonly IHttpContextAccessor? _httpContextAccessor;
 
-    public UserService(AppDbContext dbContext,  IOptions<JwtOptions> jwtOptions, IValidator<User> userValidator, IHttpContextAccessor? httpContextAccessor = null)
+    public UserService(AppDbContext dbContext,  IOptions<JwtOptions> jwtOptions, IValidator<PriceTracker.Entities.User> userValidator, IHttpContextAccessor? httpContextAccessor = null)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _userValidator = userValidator ?? throw new ArgumentNullException(nameof(userValidator));
@@ -29,7 +27,7 @@ public class UserService : IUserService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<User?> GetCurrentUserAsync()
+    public async Task<PriceTracker.Entities.User?> GetCurrentUserAsync()
     {
         var userId = _httpContextAccessor?.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.NameId);
         if (userId == null)
@@ -38,7 +36,7 @@ public class UserService : IUserService
         return await _dbContext.Users.FindAsync(userId);
     }
 
-    public async Task<bool> CreateAsync(User user, string password)
+    public async Task<bool> CreateAsync(PriceTracker.Entities.User user, string password)
     {
         var salt = GetRandomSalt();
 

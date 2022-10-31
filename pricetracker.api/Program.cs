@@ -3,8 +3,8 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PriceTracker.API.Endpoints.User;
 using PriceTracker.API.Helpers;
-using PriceTracker.API.Services.Auth;
 using PriceTracker.Entities;
 using PriceTracker.Infra;
 
@@ -65,6 +65,8 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionKey));
 
