@@ -4,3 +4,5 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 /PriceTracker.API/app.db
+/PriceTracker.API/app.db-shm
+/PriceTracker.API/app.db-wal
