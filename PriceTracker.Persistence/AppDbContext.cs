@@ -7,6 +7,8 @@ public sealed class AppDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<ConsumedRefreshToken> ConsumedRefreshTokens { get; set; }
+    public DbSet<TrackingProduct> TrackingProducts { get; set; }
+    public DbSet<TrackingProductPrice> TrackingProductPrices { get; set; }
 
     public AppDbContext()
     {
@@ -34,6 +36,10 @@ public sealed class AppDbContext : DbContext
 
         builder.Entity<ConsumedRefreshToken>()
             .HasIndex(c => c.ConsumedRefreshTokenId)
+            .IsUnique();
+
+        builder.Entity<TrackingProduct>()
+            .HasIndex(c => c.Url)
             .IsUnique();
     }
 }

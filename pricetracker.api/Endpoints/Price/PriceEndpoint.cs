@@ -10,6 +10,6 @@ public class PriceEndpoint : IEndpoint
 {
     [HttpPost]
     [Authorize]
-    public static async Task<double?> Post([FromBody] UrlRequest urlRequest, IExtractor extractor, IHttpContextAccessor httpContextAccessor) =>
+    public static async Task<double?> Post([FromBody] UrlRequest urlRequest, IExtractor extractor) =>
         await extractor.ExtractPrice(urlRequest.Url);
 }

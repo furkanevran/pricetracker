@@ -19,7 +19,10 @@ public class UserService : IUserService
     private readonly JwtOptions _jwtOptions;
     private readonly IHttpContextAccessor? _httpContextAccessor;
 
-    public UserService(AppDbContext dbContext,  IOptions<JwtOptions> jwtOptions, IValidator<PriceTracker.Entities.User> userValidator, IHttpContextAccessor? httpContextAccessor = null)
+    public UserService(AppDbContext dbContext,
+        IOptions<JwtOptions> jwtOptions,
+        IValidator<PriceTracker.Entities.User> userValidator,
+        IHttpContextAccessor? httpContextAccessor = null)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _userValidator = userValidator ?? throw new ArgumentNullException(nameof(userValidator));
