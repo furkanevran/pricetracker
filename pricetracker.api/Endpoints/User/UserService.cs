@@ -32,11 +32,20 @@ public class UserService : IUserService
 
     public async Task<PriceTracker.Entities.User?> GetCurrentUserAsync()
     {
-        var userId = _httpContextAccessor?.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.NameId);
+        var userId = GetCurrentUserId();
         if (userId == null)
             return null;
 
         return await _dbContext.Users.FindAsync(userId);
+    }
+
+    public Guid? GetCurrentUserId()
+    {
+        var userId = _httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+            return null;
+
+        return Guid.Parse(userId);
     }
 
     public async Task<bool> CreateAsync(PriceTracker.Entities.User user, string password)

@@ -20,11 +20,11 @@ public sealed class AppDbContext : DbContext
         Database.EnsureCreated();
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-            optionsBuilder.UseSqlite("Data Source=app.db", options => options.MigrationsAssembly("PriceTracker.Persistence"));
-    }
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     if (!optionsBuilder.IsConfigured)
+    //         optionsBuilder.UseSqlite("Data Source=app.db", options => options.MigrationsAssembly("PriceTracker.Persistence"));
+    // }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using FluentValidation;
@@ -15,6 +16,8 @@ public class TrackingProduct
     [ForeignKey(nameof(AddedByUserId))] public User AddedByUser { get; set; } = null!;
 
     [Required] public DateTime AddedAt { get; set; }
+
+    public List<TrackingProductPrice>? TrackingProductPrices { get; set; }
 }
 
 public class TrackingUrlValidator : AbstractValidator<TrackingProduct>

@@ -28,16 +28,16 @@ public static class ServiceCollectionExtensions
         return serviceCollection;
     }
 
-    public static IServiceCollection AddAppDbContext(this IServiceCollection serviceCollection, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
-    {
-        serviceCollection
-            .AddEntityFrameworkSqlite()
-            .AddDbContext<AppDbContext>((provider, builder) =>
-            {
-                // builder.UseSqlite("Data Source=app.db", options => { options.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName); });
-                optionsAction?.Invoke(provider, builder);
-            });
-
-        return serviceCollection;
-    }
+    // public static IServiceCollection AddAppDbContext(this IServiceCollection serviceCollection, Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null)
+    // {
+    //     serviceCollection
+    //         .AddEntityFrameworkSqlite()
+    //         .AddDbContext<AppDbContext>((provider, builder) =>
+    //         {
+    //             // builder.UseSqlite("Data Source=app.db", options => { options.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName); });
+    //             optionsAction?.Invoke(provider, builder);
+    //         });
+    //
+    //     return serviceCollection;
+    // }
 }

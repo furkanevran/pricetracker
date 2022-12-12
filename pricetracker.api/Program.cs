@@ -1,16 +1,24 @@
 using System.Text;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PriceTracker.API.Endpoints.User;
 using PriceTracker.API.Helpers;
 using PriceTracker.Entities;
 using PriceTracker.Infra;
+using PriceTracker.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAppDbContext();
+// builder.Services.AddAppDbContext();
+builder.Services
+    .AddDbContext<AppDbContext>((provider, optionsBuilder) =>
+    {
+        var env = provider.GetRequiredService<IHostEnvironment>();
+        optionsBuilder.UseSqlite($"Data Source={env.ContentRootPath}/app.db", options => { options.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName); });
+    });
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
