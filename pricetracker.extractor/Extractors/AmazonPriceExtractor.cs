@@ -31,6 +31,9 @@ public class AmazonPriceExtractor : IPriceExtractor
 
         var productModel = JsonSerializer.Deserialize<JsonElement>(jsonMetadata);
 
+        if (productModel.ValueKind == JsonValueKind.Array)
+            productModel = productModel[0];
+
         return productModel.GetProperty("priceAmount").GetDouble();
     }
 }
