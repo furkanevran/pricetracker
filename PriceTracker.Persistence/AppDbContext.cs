@@ -31,6 +31,7 @@ public sealed class AppDbContext : DbContext
     public IEnumerable<(object Entity, IValidator Validator)> GetValidatableEntities()
     {
         var validatorProvider = this.GetService<IValidatorProvider>();
+        var serviceProvider = this.GetService<IServiceProvider>();
 
         var entities = ChangeTracker.Entries()
             .Where(e => e.State is EntityState.Added or EntityState.Modified)
@@ -38,7 +39,7 @@ public sealed class AppDbContext : DbContext
 
         var validators = entities.Select(entity =>
             (Entity: entity,
-                Validator: validatorProvider.GetValidator(entity.GetType())));
+                Validator: validatorProvider.GetValidator(entity.GetType(), serviceProvider)));
 
         return validators.Where(v => v.Validator != null);
     }
