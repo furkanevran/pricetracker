@@ -7,18 +7,23 @@ using Microsoft.OpenApi.Models;
 using PriceTracker.API.Endpoints.User;
 using PriceTracker.API.Helpers;
 using PriceTracker.Entities;
+using PriceTracker.Entities.Providers;
 using PriceTracker.Infra;
 using PriceTracker.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.Services.AddAppDbContext();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssemblyContaining<User>();
+builder.Services.AddSingleton<IValidatorProvider>(new ValidatorProvider(new []{typeof(Program).Assembly, typeof(User).Assembly}));
+
 builder.Services
     .AddDbContext<AppDbContext>((provider, optionsBuilder) =>
     {
         var env = provider.GetRequiredService<IHostEnvironment>();
         optionsBuilder.UseSqlite($"Data Source={env.ContentRootPath}/app.db", options => { options.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName); });
     });
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -50,8 +55,6 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.Services.AddExtractors();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-builder.Services.AddValidatorsFromAssemblyContaining<User>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(options =>

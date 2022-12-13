@@ -1,5 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using PriceTracker.Entities;
+using PriceTracker.Entities.Providers;
 
 namespace PriceTracker.Persistence;
 
@@ -18,6 +26,66 @@ public sealed class AppDbContext : DbContext
         : base(options)
     {
         Database.EnsureCreated();
+    }
+
+    public IEnumerable<(object Entity, IValidator Validator)> GetValidatableEntities()
+    {
+        var validatorProvider = this.GetService<IValidatorProvider>();
+
+        var entities = ChangeTracker.Entries()
+            .Where(e => e.State is EntityState.Added or EntityState.Modified)
+            .Select(e => e.Entity);
+
+        var validators = entities.Select(entity =>
+            (Entity: entity,
+                Validator: validatorProvider.GetValidator(entity.GetType())));
+
+        return validators.Where(v => v.Validator != null);
+    }
+
+
+    private async Task ValidateChangesAsync(CancellationToken cancellationToken)
+    {
+        foreach (var (entry, validator) in GetValidatableEntities())
+        {
+            var result = await validator.ValidateAsync(new ValidationContext<object?>(Convert.ChangeType(entry, entry.GetType())), cancellationToken);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+        }
+    }
+
+    private void ValidateChanges()
+    {
+        foreach (var (entry, validator) in GetValidatableEntities())
+        {
+            var result = validator.Validate(new ValidationContext<object?>(Convert.ChangeType(entry, entry.GetType())));
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+        }
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        await ValidateChangesAsync(cancellationToken);
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+    {
+        await ValidateChangesAsync(cancellationToken);
+        return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    public override int SaveChanges()
+    {
+        ValidateChanges();
+        return base.SaveChanges();
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        ValidateChanges();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
     // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
