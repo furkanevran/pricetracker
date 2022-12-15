@@ -10,10 +10,10 @@ using PriceTracker.Persistence;
 namespace PriceTracker.API.Endpoints.Price;
 
 [Template("/price")]
+[Authorize]
 public class PriceEndpoint : IEndpoint
 {
     [HttpPost]
-    [Authorize]
     public static async Task<double?> Post([FromBody] UrlRequest urlRequest, IExtractor extractor, IUserService userService, AppDbContext dbContext)
     {
         var userId = userService.GetCurrentUserId()!.Value;
