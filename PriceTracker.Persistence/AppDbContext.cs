@@ -41,7 +41,7 @@ public sealed class AppDbContext : DbContext
             (Entity: entity,
                 Validator: validatorProvider.GetValidator(entity.GetType(), serviceProvider)));
 
-        return validators.Where(v => v.Validator != null);
+        return (IEnumerable<(object Entity, IValidator Validator)>)validators.Where(v => v.Validator != null);
     }
 
 

@@ -10,7 +10,7 @@ public class TrackingProduct
 {
     [Required] public Guid TrackingProductId { get; set; }
 
-    [Required] public string Url { get; set; }
+    [Required] public string Url { get; set; } = null!;
 
     [Required] public Guid AddedByUserId { get; set; }
     [ForeignKey(nameof(AddedByUserId))] public User AddedByUser { get; set; } = null!;
