@@ -19,7 +19,7 @@ public static class WebApplicationHelpers
             return Delegate.CreateDelegate(funcType, method);
         }
 
-        static (string Template, Delegate Handler)[] GetActions<T>(string baseTemplate, IReflect endpointType) where T : HttpMethodAttribute
+        static IEnumerable<(string Template, Delegate Handler)> GetActions<T>(string baseTemplate, IReflect endpointType) where T : HttpMethodAttribute
         {
             var foundMethods = endpointType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Where(m => m.GetCustomAttribute<T>() != null);
@@ -31,26 +31,28 @@ public static class WebApplicationHelpers
                     template += "/" + templateSuffix;
                 
                 return (template, CreateDelegate(method));
-            }).ToArray();
+            });
         }
         
         var endpointTypes = typeof(IEndpoint).Assembly.GetTypes().Where(t => typeof(IEndpoint).IsAssignableFrom(t) &&
-                                                                             !t.IsAbstract &&
-                                                                             !t.IsInterface &&
-                                                                             t.IsPublic);
+                                                                             t is {IsAbstract: false, IsInterface: false, IsPublic: true});
 
         foreach (var endpointType in endpointTypes)
         {
             var authorizeAttr = endpointType.GetCustomAttribute<AuthorizeAttribute>() as IAuthorizeData;
-
             var pattern = endpointType.GetCustomAttribute<TemplateAttribute>()?.Template ?? endpointType.Name;
 
             void MapMethods<T>() where T : HttpMethodAttribute
             {
                 foreach (var post in GetActions<T>(pattern, endpointType))
-                    app.MapMethods(post.Template, new[] {HttpMethod.Post.Method}, post.Handler)
-                        .AddEndpointFilter<ValidateEntityFilter>()
-                        .WithMetadata(authorizeAttr);
+                {
+                    var builder = app.MapMethods(post.Template, new[] {HttpMethod.Post.Method}, post.Handler)
+                        .AddEndpointFilter<ValidateEntityFilter>();
+
+                    if (authorizeAttr != null)
+                        builder.WithMetadata(authorizeAttr);
+                }
+
             }
 
             MapMethods<HttpPostAttribute>();
