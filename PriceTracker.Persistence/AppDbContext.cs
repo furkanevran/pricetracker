@@ -17,6 +17,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<ConsumedRefreshToken> ConsumedRefreshTokens { get; set; }
     public DbSet<TrackingProduct> TrackingProducts { get; set; }
     public DbSet<TrackingProductPrice> TrackingProductPrices { get; set; }
+    public DbSet<UserProduct> UserProducts { get; set; }
 
     public AppDbContext()
     {
@@ -25,7 +26,6 @@ public sealed class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
-        Database.EnsureCreated();
     }
 
     public IEnumerable<(object Entity, IValidator Validator)> GetValidatableEntities()
@@ -104,7 +104,7 @@ public sealed class AppDbContext : DbContext
         });
 
         builder.Entity<ConsumedRefreshToken>()
-            .HasIndex(c => c.ConsumedRefreshTokenId)
+            .HasIndex(c => c.ConsumedRefreshTokenId, "IX_ConsumedRefreshToken_ConsumedRefreshTokenId")
             .IsUnique();
 
         builder.Entity<TrackingProduct>()

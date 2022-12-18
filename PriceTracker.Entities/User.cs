@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 
@@ -12,6 +13,8 @@ public class User
     [Required] public string PasswordHash { get; set; } = null!;
     [Required] public string PasswordSalt { get; set; } = null!;
     [Required] public int TokenVersion { get; set; }
+
+    public List<UserProduct>? UserProducts { get; set; }
 }
 
 public class UserValidator : AbstractValidator<User>

@@ -15,7 +15,9 @@ public static class WebApplicationHelpers
     {
         static Delegate CreateDelegate(MethodInfo method)
         {
-            var funcType = Expression.GetDelegateType(method.GetParameters().Select(p => p.ParameterType).Append(method.ReturnType).ToArray());
+            var methodParameterTypes = method.GetParameters().Select(p => p.ParameterType);
+
+            var funcType = Expression.GetDelegateType(methodParameterTypes.Distinct().Append(method.ReturnType).ToArray());
             return Delegate.CreateDelegate(funcType, method);
         }
 

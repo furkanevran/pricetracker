@@ -4,12 +4,13 @@ using FluentValidation;
 
 namespace PriceTracker.API.Endpoints.Price;
 
-public class UrlRequest
+public class AddProductRequest
 {
     [JsonPropertyName("url"), Required] public string Url { get; set; } = null!;
+    [JsonPropertyName("tag"), MaxLength(120)] public string Tag { get; set; } = null!;
 }
 
-public class UrlRequestValidator : AbstractValidator<UrlRequest>
+public class UrlRequestValidator : AbstractValidator<AddProductRequest>
 {
     public UrlRequestValidator()
     {
@@ -17,6 +18,9 @@ public class UrlRequestValidator : AbstractValidator<UrlRequest>
             .Must(url => url.StartsWith("https://")).WithMessage("URL must be HTTPS")
             .Must(url => Uri.TryCreate(url, UriKind.Absolute, out _)).WithMessage("Invalid URL")
             .NotEmpty();
+
+        RuleFor(x => x.Tag)
+            .MaximumLength(120);
     }
 }
 
