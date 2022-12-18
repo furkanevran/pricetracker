@@ -8,15 +8,13 @@ using PriceTracker.API.BackgroundServices;
 using PriceTracker.API.Endpoints.User;
 using PriceTracker.API.Helpers;
 using PriceTracker.Entities;
-using PriceTracker.Entities.Providers;
 using PriceTracker.Infra;
 using PriceTracker.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-builder.Services.AddValidatorsFromAssemblyContaining<User>();
-builder.Services.AddSingleton<IValidatorProvider>(new ValidatorProvider(new []{typeof(Program).Assembly, typeof(User).Assembly}));
+builder.Services.AddValidators(typeof(Program).Assembly, typeof(User).Assembly);
 
 builder.Services.AddHostedService<DeleteExpiredConsumedRefreshTokensHostedService>();
 

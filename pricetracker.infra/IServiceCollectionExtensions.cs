@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using PriceTracker.Entities.Providers;
 using PriceTracker.Extractor;
 using PriceTracker.Extractor.Extractors;
-using PriceTracker.Persistence;
 
 namespace PriceTracker.Infra;
 
@@ -25,6 +26,13 @@ public static class ServiceCollectionExtensions
 
         serviceCollection.AddHttpClient("Extractor");
 
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddValidators(this IServiceCollection serviceCollection, params Assembly[] assemblies)
+    {
+        serviceCollection.AddValidatorsFromAssemblies(assemblies);
+        serviceCollection.AddSingleton<IValidatorProvider>(new ValidatorProvider(assemblies));
         return serviceCollection;
     }
 
