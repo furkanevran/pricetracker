@@ -20,15 +20,38 @@ public class UserEndpoint : IEndpoint
         return await userService.CreateAsync(user, request.Password);
     }
 
-    [HttpPost("login")]
-    public static async Task<TokenResponse> Login(LoginRequest request, IUserService userService)
+    private static void SetRefreshTokenCookie(IHttpContextAccessor contextAccessor, Token tokens)
     {
-        return await userService.GetTokens(request.Username, request.Password);
+        contextAccessor.HttpContext.Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            SameSite = SameSiteMode.Lax,
+            Expires = tokens.RefreshTokenExpiresAt
+        });
+    }
+
+    [HttpPost("login")]
+    public static async Task<AccessTokenResponse> Login(LoginRequest request, IUserService userService, IHttpContextAccessor contextAccessor)
+    {
+        var tokens = await userService.GetTokens(request.Username, request.Password);
+
+        SetRefreshTokenCookie(contextAccessor, tokens);
+
+        return new AccessTokenResponse(tokens.AccessToken, tokens.AccessTokenExpiresAt);
     }
 
     [HttpPost("newtoken")]
-    public static async Task<TokenResponse> NewTokenFromRefreshToken([FromBody] string token, IUserService userService)
+    public static async Task<AccessTokenResponse> NewTokenFromRefreshToken(IUserService userService, IHttpContextAccessor contextAccessor)
     {
-        return await userService.GetTokensFromRefreshToken(token);
+        contextAccessor.HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
+        if (string.IsNullOrEmpty(refreshToken))
+            throw new Exception("No refresh token found");
+
+        var tokens = await userService.GetTokensFromRefreshToken(refreshToken);
+
+        SetRefreshTokenCookie(contextAccessor, tokens);
+
+        return new AccessTokenResponse(tokens.AccessToken, tokens.AccessTokenExpiresAt);
     }
+
 }

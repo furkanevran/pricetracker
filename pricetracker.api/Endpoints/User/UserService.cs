@@ -122,7 +122,7 @@ public class UserService : IUserService
         return null;
     }
 
-    public string GenerateRefreshToken(Guid userId, int tokenVersion)
+    public (string Token, DateTimeOffset ExpiresAt) GenerateRefreshToken(Guid userId, int tokenVersion)
     {
         var claims = new List<Claim>
         {
@@ -147,10 +147,10 @@ public class UserService : IUserService
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
-        return tokenHandler.WriteToken(token);
+        return (tokenHandler.WriteToken(token), tokenDescriptor.Expires.Value);
     }
 
-    public (string Token, DateTime ExpiresAt) GenerateAccessToken(string username, Guid userId)
+    public (string Token, DateTimeOffset ExpiresAt) GenerateAccessToken(string username, Guid userId)
     {
         var claims = new List<Claim>
         {
@@ -178,7 +178,7 @@ public class UserService : IUserService
         return (tokenHandler.WriteToken(token), tokenDescriptor.Expires.Value);
     }
 
-    public async Task<TokenResponse> GetTokensFromRefreshToken(string token)
+    public async Task<Token> GetTokensFromRefreshToken(string token)
     {
         var verifiedToken = await GetVerifiedToken(token, _jwtOptions.RefreshTokenSecret);
         if (verifiedToken == null)
@@ -208,10 +208,10 @@ public class UserService : IUserService
         });
         await _dbContext.SaveChangesAsync();
 
-        return new TokenResponse(accessToken.Token, refreshToken, accessToken.ExpiresAt);
+        return new Token(accessToken.Token, refreshToken.Token, accessToken.ExpiresAt, refreshToken.ExpiresAt);
     }
 
-    public async Task<TokenResponse> GetTokens(string username, string password)
+    public async Task<Token> GetTokens(string username, string password)
     {
         var user = _dbContext.Users.First(x => x.Username == username);
         if (!await VerifyHash(password, user.PasswordSalt, user.PasswordHash))
@@ -222,6 +222,6 @@ public class UserService : IUserService
         var token = GenerateAccessToken(user.Username, user.UserId);
         var refreshToken = GenerateRefreshToken(user.UserId, user.TokenVersion);
 
-        return new TokenResponse(token.Token, refreshToken, token.ExpiresAt);
+        return new Token(token.Token, refreshToken.Token, token.ExpiresAt, refreshToken.ExpiresAt);
     }
 }

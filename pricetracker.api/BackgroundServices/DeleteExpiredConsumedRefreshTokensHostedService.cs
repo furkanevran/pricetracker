@@ -36,7 +36,7 @@ public sealed class DeleteExpiredConsumedRefreshTokensHostedService : Background
     private async Task DoWorkAsync(CancellationToken cancellationToken)
     {
         await using var scope = _scopeFactory.CreateAsyncScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         var expiredRefreshTokens = dbContext.ConsumedRefreshTokens.Where(x => x.ExpiresAt < DateTime.UtcNow).ToList();
 
