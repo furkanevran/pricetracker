@@ -16,11 +16,11 @@ public class ProductEndpoint : IEndpoint
     [Authorize]
     public static async Task<IResult> Add([FromBody] AddProductRequest addProductRequest,
         IExtractor extractor,
-        IUserService userService,
+        IAuthService authService,
         AppDbContext dbContext,
         CancellationToken cancellationToken)
     {
-        var userId = userService.GetCurrentUserId()!.Value;
+        var userId = authService.GetCurrentUserId()!.Value;
 
         var trackingProduct = await dbContext.TrackingProducts
             .FirstOrDefaultAsync(x => x.Url == addProductRequest.Url, cancellationToken: cancellationToken);
@@ -29,7 +29,7 @@ public class ProductEndpoint : IEndpoint
         {
             var price = await extractor.ExtractPrice(addProductRequest.Url);
             if (price == null)
-                return null;
+                return Results.BadRequest("Could not extract price from url");
 
             trackingProduct = new TrackingProduct
             {
@@ -49,7 +49,11 @@ public class ProductEndpoint : IEndpoint
             await dbContext.TrackingProducts.AddAsync(trackingProduct, cancellationToken);
         }
 
-        await dbContext.UserProducts.AddAsync(new UserProduct()
+        var userProduct = await dbContext.UserProducts
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.TrackingProductId == trackingProduct.TrackingProductId,
+                cancellationToken: cancellationToken);
+
+        await dbContext.UserProducts.AddAsync(new UserProduct
         {
             Tag = addProductRequest.Tag,
             UserId = userId,

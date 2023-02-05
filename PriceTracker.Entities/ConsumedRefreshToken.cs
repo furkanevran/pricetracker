@@ -1,9 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace PriceTracker.Entities;
 
+[Index(nameof(ConsumedRefreshTokenId), IsUnique = true)]
+[Index(nameof(ExpiresAt))]
 public class ConsumedRefreshToken
 {
     [Required] public Guid ConsumedRefreshTokenId { get; set; }

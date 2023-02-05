@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace PriceTracker.Entities;
 
+[Index(nameof(EMail), IsUnique = true)]
+[Index(nameof(Username), IsUnique = true)]
+[Index(nameof(TokenVersion))]
 public class User
 {
     [Required] public Guid UserId { get; set; }

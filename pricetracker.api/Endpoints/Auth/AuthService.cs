@@ -12,14 +12,14 @@ using PriceTracker.Persistence;
 
 namespace PriceTracker.API.Endpoints.User;
 
-public class UserService : IUserService
+public class AuthService : IAuthService
 {
     private readonly AppDbContext _dbContext;
     private readonly IValidator<PriceTracker.Entities.User> _userValidator;
     private readonly JwtOptions _jwtOptions;
     private readonly IHttpContextAccessor? _httpContextAccessor;
 
-    public UserService(AppDbContext dbContext,
+    public AuthService(AppDbContext dbContext,
         IOptions<JwtOptions> jwtOptions,
         IValidator<PriceTracker.Entities.User> userValidator,
         IHttpContextAccessor? httpContextAccessor = null)
@@ -48,17 +48,17 @@ public class UserService : IUserService
         return Guid.Parse(userId);
     }
 
-    public async Task<bool> CreateAsync(PriceTracker.Entities.User user, string password)
+    public async Task<bool> CreateAsync(PriceTracker.Entities.User user, string password, CancellationToken cancellationToken = default)
     {
         var salt = GetRandomSalt();
 
         user.PasswordSalt = Convert.ToBase64String(salt);
         user.PasswordHash = Convert.ToBase64String(await GetHash(password, salt));
 
-        await _userValidator.ValidateAndThrowAsync(user);
+        await _userValidator.ValidateAndThrowAsync(user, cancellationToken: cancellationToken);
         _dbContext.Users.Add(user);
 
-        return await _dbContext.SaveChangesAsync() == 1;
+        return await _dbContext.SaveChangesAsync(cancellationToken) == 1;
     }
 
     private static byte[] GetRandomSalt()
@@ -178,14 +178,14 @@ public class UserService : IUserService
         return (tokenHandler.WriteToken(token), tokenDescriptor.Expires.Value);
     }
 
-    public async Task<Token> GetTokensFromRefreshToken(string token)
+    public async Task<Token> GetTokensFromRefreshToken(string token, CancellationToken cancellationToken = default)
     {
         var verifiedToken = await GetVerifiedToken(token, _jwtOptions.RefreshTokenSecret);
         if (verifiedToken == null)
             throw new Exception("Invalid refresh token.");
 
         var jti = Guid.Parse(verifiedToken.Id);
-        if (await _dbContext.ConsumedRefreshTokens.AnyAsync(x => x.ConsumedRefreshTokenId == jti))
+        if (await _dbContext.ConsumedRefreshTokens.AnyAsync(x => x.ConsumedRefreshTokenId == jti, cancellationToken: cancellationToken))
             throw new Exception("Refresh token is blacklisted.");
 
         var userId = Guid.Parse(verifiedToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.NameId).Value);
@@ -206,15 +206,15 @@ public class UserService : IUserService
             ConsumedRefreshTokenId = jti,
             ExpiresAt = verifiedToken.ValidTo
         });
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return new Token(accessToken.Token, refreshToken.Token, accessToken.ExpiresAt, refreshToken.ExpiresAt);
     }
 
-    public async Task<Token> GetTokens(string username, string password)
+    public async Task<Token> GetTokens(string username, string password, CancellationToken cancellationToken = default)
     {
-        var user = _dbContext.Users.First(x => x.Username == username);
-        if (!await VerifyHash(password, user.PasswordSalt, user.PasswordHash))
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken: cancellationToken);
+        if (user == null || !await VerifyHash(password, user.PasswordSalt, user.PasswordHash))
         {
             throw new Exception("Invalid username or password");
         }

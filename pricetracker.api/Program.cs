@@ -22,7 +22,7 @@ builder.Services
     .AddDbContext<AppDbContext>((provider, optionsBuilder) =>
     {
         var env = provider.GetRequiredService<IHostEnvironment>();
-        optionsBuilder.UseSqlite($"Data Source={env.ContentRootPath}/app.db", options => { options.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName); });
+        optionsBuilder.UseSqlite($"Data Source={env.ContentRootPath}/app.db");
     });
 
 builder.Services.AddControllers();
@@ -78,7 +78,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionKey));
 

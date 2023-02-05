@@ -1,57 +1,53 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PriceTracker.API.Attributes;
+using PriceTracker.Persistence;
 
 namespace PriceTracker.API.Endpoints.User;
 
 [Template("/user")]
+[Authorize]
 public class UserEndpoint : IEndpoint
 {
-    [HttpPost("register")]
-    public static async Task<bool> Register(RegisterRequest request, IUserService userService)
+    [HttpPost("get-products")]
+    [Authorize]
+    public static async Task<GetProductsResponse> GetProducts([FromBody] GetProductsRequest getProductsRequest,
+        IAuthService authService,
+        AppDbContext dbContext,
+        CancellationToken cancellationToken)
     {
-        var user = new PriceTracker.Entities.User
+        var userId = authService.GetCurrentUserId()!.Value;
+
+        var products = dbContext.UserProducts
+            .Where(x => x.UserId == userId)
+            .Include(x => x.TrackingProduct)
+            .ThenInclude(x => x.TrackingProductPrices)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(getProductsRequest.Tag))
+            products = products.Where(x => x.Tag.Contains(getProductsRequest.Tag));
+
+        if (!string.IsNullOrEmpty(getProductsRequest.Url))
+            products = products.Where(x => x.TrackingProduct.Url.Contains(getProductsRequest.Url));
+
+        var total = await products.CountAsync(cancellationToken);
+        var selectedProducts = await products
+            .Skip(getProductsRequest.Skip)
+            .Take(getProductsRequest.Take)
+            .Select(x => new GetProductsResponse.Product(x.TrackingProduct.TrackingProductPrices!
+                .OrderByDescending(x => x.AddedAt)
+                .Select(x => x.Price)
+                .FirstOrDefault(), x.TrackingProduct.Url, x.Tag))
+            .ToListAsync(cancellationToken);
+
+        return new GetProductsResponse
         {
-            UserId = Guid.NewGuid(),
-            EMail = request.EMail,
-            Username = request.Username,
-            TokenVersion = 1
+            Products = selectedProducts,
+            TotalItems = total,
+            Page = selectedProducts.Count == 0 ? 0 : (int)Math.Ceiling((double) getProductsRequest.Skip / getProductsRequest.Take) + 1,
+            PageSize = getProductsRequest.Take,
+            TotalPages = (int)Math.Ceiling((double) total / getProductsRequest.Take)
         };
-
-        return await userService.CreateAsync(user, request.Password);
     }
-
-    private static void SetRefreshTokenCookie(IHttpContextAccessor contextAccessor, Token tokens)
-    {
-        contextAccessor.HttpContext.Response.Cookies.Append("refreshToken", tokens.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
-            Expires = tokens.RefreshTokenExpiresAt
-        });
-    }
-
-    [HttpPost("login")]
-    public static async Task<AccessTokenResponse> Login(LoginRequest request, IUserService userService, IHttpContextAccessor contextAccessor)
-    {
-        var tokens = await userService.GetTokens(request.Username, request.Password);
-
-        SetRefreshTokenCookie(contextAccessor, tokens);
-
-        return new AccessTokenResponse(tokens.AccessToken, tokens.AccessTokenExpiresAt);
-    }
-
-    [HttpPost("newtoken")]
-    public static async Task<AccessTokenResponse> NewTokenFromRefreshToken(IUserService userService, IHttpContextAccessor contextAccessor)
-    {
-        contextAccessor.HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
-        if (string.IsNullOrEmpty(refreshToken))
-            throw new Exception("No refresh token found");
-
-        var tokens = await userService.GetTokensFromRefreshToken(refreshToken);
-
-        SetRefreshTokenCookie(contextAccessor, tokens);
-
-        return new AccessTokenResponse(tokens.AccessToken, tokens.AccessTokenExpiresAt);
-    }
-
 }

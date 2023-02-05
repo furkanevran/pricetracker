@@ -2,9 +2,14 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace PriceTracker.Entities;
 
+[Index(nameof(TrackingProductId), nameof(AddedAt), IsUnique = true, IsDescending = new[] {false, true})]
+[Index(nameof(TrackingProductId))]
+[Index(nameof(Price))]
+[Index(nameof(AddedAt), AllDescending = true)]
 public class TrackingProductPrice
 {
     [Required] public Guid TrackingProductPriceId { get; set; }

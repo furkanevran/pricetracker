@@ -94,21 +94,4 @@ public sealed class AppDbContext : DbContext
     //     if (!optionsBuilder.IsConfigured)
     //         optionsBuilder.UseSqlite("Data Source=app.db", options => options.MigrationsAssembly("PriceTracker.Persistence"));
     // }
-
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        builder.Entity<User>(entity =>
-        {
-            entity.HasIndex(u => u.Username).IsUnique();
-            entity.HasIndex(u => u.EMail).IsUnique();
-        });
-
-        builder.Entity<ConsumedRefreshToken>()
-            .HasIndex(c => c.ConsumedRefreshTokenId, "IX_ConsumedRefreshToken_ConsumedRefreshTokenId")
-            .IsUnique();
-
-        builder.Entity<TrackingProduct>()
-            .HasIndex(c => c.Url)
-            .IsUnique();
-    }
 }

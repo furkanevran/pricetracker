@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace PriceTracker.Entities;
 
+[Index(nameof(Url), IsUnique = true)]
 public class TrackingProduct
 {
     [Required] public Guid TrackingProductId { get; set; }

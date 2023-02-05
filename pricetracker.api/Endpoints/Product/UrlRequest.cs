@@ -7,7 +7,7 @@ namespace PriceTracker.API.Endpoints.Price;
 public class AddProductRequest
 {
     [JsonPropertyName("url"), Required] public string Url { get; set; } = null!;
-    [JsonPropertyName("tag"), MaxLength(120)] public string Tag { get; set; } = null!;
+    [JsonPropertyName("tag"), MaxLength(120)] public string Tag { get; set; } = "";
 }
 
 public class UrlRequestValidator : AbstractValidator<AddProductRequest>
@@ -20,7 +20,8 @@ public class UrlRequestValidator : AbstractValidator<AddProductRequest>
             .NotEmpty();
 
         RuleFor(x => x.Tag)
-            .MaximumLength(120);
+            .MaximumLength(120)
+            .NotNull();
     }
 }
 
