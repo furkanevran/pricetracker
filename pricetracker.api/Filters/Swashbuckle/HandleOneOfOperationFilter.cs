@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using OneOf;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace PriceTracker.API;
+namespace PriceTracker.API.Filters.Swashbuckle;
 
 public class HandleOneOfOperationFilter : IOperationFilter
 {

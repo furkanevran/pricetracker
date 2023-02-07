@@ -1,11 +1,8 @@
-using System.Reflection;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using OneOf;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace PriceTracker.API;
+namespace PriceTracker.API.Filters.Swashbuckle;
 
 public class HandleOneOfSchemaFilter : ISchemaFilter
 {
