@@ -49,7 +49,8 @@ public static class WebApplicationHelpers
                 foreach (var post in GetActions<T>(pattern, endpointType))
                 {
                     var builder = app.MapMethods(post.Template, new[] {HttpMethod.Post.Method}, post.Handler)
-                        .AddEndpointFilter<ValidateEntityFilter>();
+                        .AddEndpointFilter<ValidateEntityFilter>()
+                        .AddEndpointFilter<OneOfResultFilter>();
 
                     if (authorizeAttr != null)
                         builder.WithMetadata(authorizeAttr);

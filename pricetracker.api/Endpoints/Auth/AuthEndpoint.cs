@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PriceTracker.API.Attributes;
+using OneOf;
 
 namespace PriceTracker.API.Endpoints.User;
 
@@ -8,7 +9,7 @@ namespace PriceTracker.API.Endpoints.User;
 public class AuthEndpoint : IEndpoint
 {
     [HttpPost("register")]
-    public static async Task<IResult> Register(RegisterRequest request,
+    public static async Task<OneOf<Ok, BadRequest>> Register(RegisterRequest request,
         IAuthService authService,
         CancellationToken cancellationToken)
     {
@@ -20,8 +21,8 @@ public class AuthEndpoint : IEndpoint
             TokenVersion = 1
         };
 
-        await authService.CreateAsync(user, request.Password, cancellationToken);
-        return Results.Ok();
+        var result = await authService.CreateAsync(user, request.Password, cancellationToken);
+        return result ? TypedResults.Ok() : TypedResults.BadRequest();
     }
 
     private static void SetRefreshTokenCookie(IHttpContextAccessor contextAccessor, Token tokens)
@@ -39,12 +40,15 @@ public class AuthEndpoint : IEndpoint
     }
 
     [HttpPost("login")]
-    public static async Task<AccessTokenResponse> Login(LoginRequest request,
+    public static async Task<OneOf<AccessTokenResponse, NotFound>> Login(LoginRequest request,
         IAuthService authService,
         IHttpContextAccessor contextAccessor,
         CancellationToken cancellationToken)
     {
         var tokens = await authService.GetTokens(request.Username, request.Password, cancellationToken);
+
+        if (tokens == null)
+            return TypedResults.NotFound();
 
         SetRefreshTokenCookie(contextAccessor, tokens);
 
@@ -52,7 +56,7 @@ public class AuthEndpoint : IEndpoint
     }
 
     [HttpPost("new-token")]
-    public static async Task<AccessTokenResponse> NewTokenFromRefreshToken(IAuthService authService,
+    public static async Task<OneOf<AccessTokenResponse, NotFound>> NewTokenFromRefreshToken(IAuthService authService,
         IHttpContextAccessor contextAccessor,
         CancellationToken cancellationToken)
     {
@@ -61,9 +65,12 @@ public class AuthEndpoint : IEndpoint
 
         contextAccessor.HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken);
         if (string.IsNullOrEmpty(refreshToken))
-            throw new Exception("No refresh token found");
+            return TypedResults.NotFound();
 
         var tokens = await authService.GetTokensFromRefreshToken(refreshToken, cancellationToken);
+
+        if (tokens == null)
+            return TypedResults.NotFound();
 
         SetRefreshTokenCookie(contextAccessor, tokens);
 

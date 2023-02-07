@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OneOf;
 using PriceTracker.API.Attributes;
 using PriceTracker.API.Endpoints.User;
 using PriceTracker.Entities;
@@ -14,7 +16,7 @@ public class ProductEndpoint : IEndpoint
 {
     [HttpPost("add")]
     [Authorize]
-    public static async Task<IResult> Add([FromBody] AddProductRequest addProductRequest,
+    public static async Task<OneOf<Ok, UnprocessableEntity, BadRequest>> Add([FromBody] AddProductRequest addProductRequest,
         IExtractor extractor,
         IAuthService authService,
         AppDbContext dbContext,
@@ -29,7 +31,7 @@ public class ProductEndpoint : IEndpoint
         {
             var price = await extractor.ExtractPrice(addProductRequest.Url);
             if (price == null)
-                return Results.BadRequest("Could not extract price from url");
+                return TypedResults.UnprocessableEntity();
 
             trackingProduct = new TrackingProduct
             {
@@ -49,10 +51,6 @@ public class ProductEndpoint : IEndpoint
             await dbContext.TrackingProducts.AddAsync(trackingProduct, cancellationToken);
         }
 
-        var userProduct = await dbContext.UserProducts
-            .FirstOrDefaultAsync(x => x.UserId == userId && x.TrackingProductId == trackingProduct.TrackingProductId,
-                cancellationToken: cancellationToken);
-
         await dbContext.UserProducts.AddAsync(new UserProduct
         {
             Tag = addProductRequest.Tag,
@@ -60,8 +58,15 @@ public class ProductEndpoint : IEndpoint
             TrackingProductId = trackingProduct.TrackingProductId,
         }, cancellationToken);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch
+        {
+            return TypedResults.BadRequest();
+        }
 
-        return Results.Ok();
+        return TypedResults.Ok();
     }
 }

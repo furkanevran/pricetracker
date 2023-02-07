@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PriceTracker.API;
 using PriceTracker.API.BackgroundServices;
 using PriceTracker.API.Endpoints.User;
 using PriceTracker.API.Helpers;
@@ -38,6 +39,10 @@ builder.Services.AddSwaggerGen(option =>
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
+
+    option.UseOneOfForPolymorphism();
+    option.SchemaFilter<HandleOneOfSchemaFilter>();
+    option.OperationFilter<HandleOneOfOperationFilter>();
 
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
