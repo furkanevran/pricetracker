@@ -1,5 +1,6 @@
 using System.Text;
 using FluentValidation;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -40,9 +41,9 @@ builder.Services.AddSwaggerGen(option =>
         Scheme = "Bearer"
     });
 
-    option.UseOneOfForPolymorphism();
-    option.SchemaFilter<HandleOneOfSchemaFilter>();
-    option.OperationFilter<HandleOneOfOperationFilter>();
+    option.SchemaFilter<OneOfSchemaFilter>();
+    option.OperationFilter<OneOfOperationFilter>();
+    option.DocumentFilter<OneOfDocumentFilter>();
 
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
@@ -62,6 +63,7 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddExtractors();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddFluentValidationRulesToSwagger();
 
 builder.Services.AddAuthentication(options =>
 {

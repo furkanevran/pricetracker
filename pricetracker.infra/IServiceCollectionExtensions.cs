@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using PriceTracker.Entities.Providers;
 using PriceTracker.Extractor;
@@ -31,6 +32,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddValidators(this IServiceCollection serviceCollection, params Assembly[] assemblies)
     {
+        serviceCollection.AddFluentValidationClientsideAdapters();
         serviceCollection.AddValidatorsFromAssemblies(assemblies);
         serviceCollection.AddSingleton<IValidatorProvider>(new ValidatorProvider(assemblies));
         return serviceCollection;

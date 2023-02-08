@@ -4,14 +4,12 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace PriceTracker.API.Filters.Swashbuckle;
 
-public class HandleOneOfSchemaFilter : ISchemaFilter
+public class OneOfSchemaFilter : ISchemaFilter
 {
     public void Apply(OpenApiSchema schema, SchemaFilterContext context)
     {
         if (schema.Properties == null || context.Type == null)
-        {
             return;
-        }
 
         var type = context.Type;
         if (!typeof(IOneOf).IsAssignableFrom(type))

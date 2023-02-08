@@ -5,7 +5,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace PriceTracker.API.Filters.Swashbuckle;
 
-public class HandleOneOfOperationFilter : IOperationFilter
+public class OneOfOperationFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
@@ -58,13 +58,13 @@ public class HandleOneOfOperationFilter : IOperationFilter
                 Content = new Dictionary<string, OpenApiMediaType>()
             };
 
-            if (!fromTypedResults)
-            {
+            if (fromTypedResults)
+                context.SchemaRepository.Schemas[name].Properties.Clear();
+            else
                 response.Content.Add("application/json", new OpenApiMediaType
                 {
                     Schema = context.SchemaRepository.Schemas[name]
                 });
-            }
 
             operation.Responses.Add(code.ToString(), response);
         }
