@@ -41,6 +41,7 @@ builder.Services.AddSwaggerGen(option =>
         Scheme = "Bearer"
     });
 
+    // these probably could be better
     option.SchemaFilter<OneOfSchemaFilter>();
     option.OperationFilter<OneOfOperationFilter>();
     option.DocumentFilter<OneOfDocumentFilter>();

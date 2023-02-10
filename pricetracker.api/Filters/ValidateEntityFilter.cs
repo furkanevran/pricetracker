@@ -16,7 +16,7 @@ public class ValidateEntityFilter : IEndpointFilter
 
             var result = await validator.ValidateAsync(new ValidationContext<object?>(Convert.ChangeType(argument, argType)));
             if (!result.IsValid)
-                return Results.BadRequest(new ErrorResponse(result.Errors.Select(x => x.ErrorMessage)));
+                return Results.BadRequest(new ValidationErrorResponse(result.Errors.Select(x => new ValidationErrorEntry(x.PropertyName, x.ErrorMessage))));
         }
 
         try
@@ -25,11 +25,11 @@ public class ValidateEntityFilter : IEndpointFilter
         }
         catch (ValidationException ex)
         {
-            return Results.BadRequest(new ErrorResponse(ex.Errors.Select(x => x.ErrorMessage)));
+            return Results.BadRequest(new ValidationErrorResponse(ex.Errors.Select(x => new ValidationErrorEntry(x.PropertyName, x.ErrorMessage))));
         }
         catch (Exception ex)
         {
-            return Results.BadRequest(new ErrorResponse(new []{ ex.Message }));
+            return Results.BadRequest(new ValidationErrorResponse(new []{ new ValidationErrorEntry(null, ex.Message) }));
         }
     }
 }
