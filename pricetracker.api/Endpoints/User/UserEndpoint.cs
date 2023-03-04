@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PriceTracker.API.Attributes;
+using PriceTracker.Entities;
 using PriceTracker.Persistence;
 
 namespace PriceTracker.API.Endpoints.User;
@@ -31,23 +32,16 @@ public class UserEndpoint : IEndpoint
         if (!string.IsNullOrEmpty(getProductsRequest.Url))
             products = products.Where(x => x.TrackingProduct.Url.Contains(getProductsRequest.Url));
 
-        var total = await products.CountAsync(cancellationToken);
-        var selectedProducts = await products
-            .Skip(getProductsRequest.Skip)
-            .Take(getProductsRequest.Take)
-            .Select(x => new GetProductsResponse.Product(x.TrackingProduct.TrackingProductPrices!
+        var productsQuery = products.Select(x => new GetProductsResponse.Product
+        {
+            Price = x.TrackingProduct.TrackingProductPrices!
                 .OrderByDescending(x => x.AddedAt)
                 .Select(x => x.Price)
-                .FirstOrDefault(), x.TrackingProduct.Url, x.Tag))
-            .ToListAsync(cancellationToken);
+                .FirstOrDefault(),
+            Url = x.TrackingProduct.Url,
+            Tag = x.Tag
+        });
 
-        return new GetProductsResponse
-        {
-            Products = selectedProducts,
-            TotalItems = total,
-            Page = selectedProducts.Count == 0 ? 0 : (int)Math.Ceiling((double) getProductsRequest.Skip / getProductsRequest.Take) + 1,
-            PageSize = getProductsRequest.Take,
-            TotalPages = (int)Math.Ceiling((double) total / getProductsRequest.Take)
-        };
+        return await productsQuery.GetPaginatedResponse<GetProductsResponse, GetProductsResponse.Product>(getProductsRequest, cancellationToken);
     }
 }
