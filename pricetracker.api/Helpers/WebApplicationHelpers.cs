@@ -21,41 +21,49 @@ public static class WebApplicationHelpers
             return Delegate.CreateDelegate(funcType, method);
         }
 
-        static IEnumerable<(string Template, Delegate Handler)> GetActions<T>(string baseTemplate, IReflect endpointType) where T : HttpMethodAttribute
+        static IEnumerable<(string Template, Delegate Handler, IEnumerable<string> SupportedMethods)>
+            GetActions<T>(string baseTemplate, IReflect endpointType) where T : HttpMethodAttribute
         {
             var foundMethods = endpointType.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .Where(m => m.GetCustomAttribute<T>() != null);
+                .Select(m => (Method: m, Attribute: m.GetCustomAttribute<T>())).Where(x => x.Attribute is not null);
 
-            return foundMethods.Select(method =>
+            return foundMethods.Select(tuple =>
             {
+                var (method, attribute) = tuple;
+
                 var template = baseTemplate;
-                if (method.GetCustomAttribute<T>()!.Template is { } templateSuffix)
+                if (attribute!.Template is { } templateSuffix)
                     template += "/" + templateSuffix;
                 
-                return (template, CreateDelegate(method));
+                return (template, CreateDelegate(method), attribute.HttpMethods);
             });
         }
         
         var endpointTypes = typeof(IEndpoint).Assembly.GetTypes().Where(t => typeof(IEndpoint).IsAssignableFrom(t) &&
                                                                              t is {IsAbstract: false, IsInterface: false, IsPublic: true});
 
+        var metadataTypes = new[]
+        {
+            typeof(AuthorizeAttribute),
+            typeof(TagsAttribute)
+        };
+
         foreach (var endpointType in endpointTypes)
         {
-            var authorizeAttr = endpointType.GetCustomAttribute<AuthorizeAttribute>() as IAuthorizeData;
+            var metadata = endpointType.GetCustomAttributes().Where(x => metadataTypes.Contains(x.GetType()));
             var pattern = endpointType.GetCustomAttribute<TemplateAttribute>()?.Template ?? endpointType.Name;
 
             void MapMethods<T>() where T : HttpMethodAttribute
             {
-                foreach (var post in GetActions<T>(pattern, endpointType))
+                foreach (var method in GetActions<T>(pattern, endpointType))
                 {
-                    var builder = app.MapMethods(post.Template, new[] {HttpMethod.Post.Method}, post.Handler)
+                    var builder = app.MapMethods(method.Template, method.SupportedMethods, method.Handler)
                         .AddEndpointFilter<ValidateEntityFilter>()
                         .AddEndpointFilter<OneOfResultFilter>();
 
-                    if (authorizeAttr != null)
-                        builder.WithMetadata(authorizeAttr);
+                    foreach (var attribute in metadata)
+                        builder.WithMetadata(attribute);
                 }
-
             }
 
             MapMethods<HttpPostAttribute>();

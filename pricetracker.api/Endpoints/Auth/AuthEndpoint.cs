@@ -6,6 +6,7 @@ using PriceTracker.API.Entities;
 
 namespace PriceTracker.API.Endpoints.User;
 
+[Tags("Auth")]
 [Template("/auth")]
 public class AuthEndpoint : IEndpoint
 {
