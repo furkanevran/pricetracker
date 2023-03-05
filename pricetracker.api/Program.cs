@@ -19,6 +19,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddValidators(typeof(Program).Assembly, typeof(User).Assembly);
 
 builder.Services.AddHostedService<DeleteExpiredConsumedRefreshTokensHostedService>();
+builder.Services.AddHostedService<UpdateProductPricesHostedService>();
 
 builder.Services
     .AddDbContext<AppDbContext>((provider, optionsBuilder) =>
