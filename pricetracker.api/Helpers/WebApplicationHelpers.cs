@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using PriceTracker.API.Attributes;
@@ -41,16 +40,9 @@ public static class WebApplicationHelpers
         
         var endpointTypes = typeof(IEndpoint).Assembly.GetTypes().Where(t => typeof(IEndpoint).IsAssignableFrom(t) &&
                                                                              t is {IsAbstract: false, IsInterface: false, IsPublic: true});
-
-        var metadataTypes = new[]
-        {
-            typeof(AuthorizeAttribute),
-            typeof(TagsAttribute)
-        };
-
         foreach (var endpointType in endpointTypes)
         {
-            var metadata = endpointType.GetCustomAttributes().Where(x => metadataTypes.Contains(x.GetType()));
+            var metadata = endpointType.GetCustomAttributes().ToArray();
             var pattern = endpointType.GetCustomAttribute<TemplateAttribute>()?.Template ?? endpointType.Name;
 
             void MapMethods<T>() where T : HttpMethodAttribute
